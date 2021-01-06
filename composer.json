@@ -1,18 +1,20 @@
 {
-    "name": "yiisoft/_____",
+    "name": "yiisoft/yii-sentry",
     "type": "library",
-    "description": "_____",
+    "description": "A Sentry integration for Yii Framework",
     "keywords": [
-        "_____"
+        "yii",
+        "sentry",
+        "sentry-sdk"
     ],
     "homepage": "https://www.yiiframework.com/",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/yiisoft/_____/issues?state=open",
+        "issues": "https://github.com/yiisoft/yii-sentry/issues?state=open",
         "forum": "https://www.yiiframework.com/forum/",
         "wiki": "https://www.yiiframework.com/wiki/",
         "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/_____"
+        "source": "https://github.com/yiisoft/yii-sentry"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -20,18 +22,19 @@
         "php": "^7.4|^8.0"
     },
     "require-dev": {
-        "infection/infection": "^0.16.3",
-        "phan/phan": "^3.0.2",
-        "phpunit/phpunit": "^9.2"
+        "phpunit/phpunit": "^9.5",
+        "roave/infection-static-analysis-plugin": "^1.6",
+        "spatie/phpunit-watcher": "^1.23",
+        "vimeo/psalm": "^4.3"
     },
     "autoload": {
         "psr-4": {
-            "Yiisoft\\_____\\": "src"
+            "Yiisoft\\Yii\\Sentry\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Yiisoft\\_____\\Tests\\": "tests"
+            "Yiisoft\\Yii\\Sentry\\Tests\\": "tests"
         }
     },
     "extra": {
@@ -41,5 +44,9 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit --testdox --no-interaction",
+        "test-watch": "phpunit-watcher watch"
     }
 }
