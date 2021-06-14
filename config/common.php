@@ -26,4 +26,5 @@ return [
     \Sentry\Options::class => function () use ($params) {
         return new \Sentry\Options($params['yiisoft/yii-sentry']['options']);
     },
+    \Sentry\State\HubInterface::class => \Sentry\State\Hub::class,
 ];
