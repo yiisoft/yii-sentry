@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Sentry\ClientBuilder;
 use Sentry\Options;
 use Sentry\SentrySdk;
+use Sentry\State\HubInterface;
 use Sentry\Transport\TransportFactoryInterface;
 use Yiisoft\Di\Container;
 use Yiisoft\Di\Support\ServiceProvider;
@@ -28,6 +29,9 @@ final class SentryProvider extends ServiceProvider
 
         $client = $clientBuilder->getClient();
 
-        SentrySdk::init()->bindClient($client);
+        $hub = $container->get(HubInterface::class);
+        $hub->bindClient($client);
+
+        SentrySdk::setCurrentHub($hub);
     }
 }
