@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Sentry\Provider;
+namespace Yiisoft\Yii\Sentry;
 
 use Psr\Log\LoggerInterface;
 use Sentry\ClientBuilder;

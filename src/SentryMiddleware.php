@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Sentry\Middleware;
+namespace Yiisoft\Yii\Sentry;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -11,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Sentry\State\HubInterface;
 use Throwable;
 
-final class SentryIntegration implements MiddlewareInterface
+final class SentryMiddleware implements MiddlewareInterface
 {
     private HubInterface $hub;
 

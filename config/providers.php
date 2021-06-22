@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Yiisoft\Yii\Sentry\Provider\SentryProvider;
+use Yiisoft\Yii\Sentry\SentryProvider;
 
 /**
  * @var array $params
