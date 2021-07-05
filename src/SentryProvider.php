@@ -15,9 +15,6 @@ use Yiisoft\Di\Support\ServiceProvider;
 
 final class SentryProvider extends ServiceProvider
 {
-    /**
-     * @psalm-suppress InaccessibleMethod
-     */
     public function register(Container $container): void
     {
         $options = $container->get(Options::class);
