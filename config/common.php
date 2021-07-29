@@ -12,8 +12,7 @@ return [
         'class' => \Sentry\HttpClient\HttpClientFactory::class,
         '__construct()' => [
             'sdkIdentifier' => \Sentry\Client::SDK_IDENTIFIER,
-            // TODO use composer tool
-            'sdkVersion' => \Jean85\PrettyVersions::getVersion('sentry/sentry')->getPrettyVersion(),
+            'sdkVersion' => \Composer\InstalledVersions::getPrettyVersion('sentry/sentry'),
         ],
     ],
     \Sentry\Options::class => [
