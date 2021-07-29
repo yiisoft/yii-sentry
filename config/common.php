@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 return [
     \Sentry\Transport\TransportFactoryInterface::class => \Sentry\Transport\DefaultTransportFactory::class,
-    \Sentry\HttpClient\HttpClientFactoryInterface::class => function (Yiisoft\Injector\Injector $injector) {
+    \Sentry\HttpClient\HttpClientFactoryInterface::class => static function (Yiisoft\Injector\Injector $injector) {
         return $injector->make(\Sentry\HttpClient\HttpClientFactory::class, [
             'sdkIdentifier' => \Sentry\Client::SDK_IDENTIFIER,
             // TODO use composer tool
