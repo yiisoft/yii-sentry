@@ -7,14 +7,6 @@ declare(strict_types=1);
  */
 
 return [
-    \Http\Client\HttpClient::class => \GuzzleHttp\Client::class,
-    \Http\Client\HttpAsyncClient::class => [
-        'class' => \Http\Adapter\Guzzle7\Client::class,
-        '__construct()' => [
-            \Yiisoft\Factory\Definition\Reference::to(\GuzzleHttp\Client::class),
-        ],
-    ],
-
     \Sentry\Transport\TransportFactoryInterface::class => \Sentry\Transport\DefaultTransportFactory::class,
     \Sentry\HttpClient\HttpClientFactoryInterface::class => function (Yiisoft\Injector\Injector $injector) {
         return $injector->make(\Sentry\HttpClient\HttpClientFactory::class, [
