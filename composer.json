@@ -32,7 +32,11 @@
         "phpunit/phpunit": "^9.5",
         "roave/infection-static-analysis-plugin": "^1.6",
         "spatie/phpunit-watcher": "^1.23",
-        "vimeo/psalm": "^4.3"
+        "vimeo/psalm": "^4.3",
+        "yiisoft/yii-console": "3.0.x-dev"
+    },
+    "suggest": {
+        "yiisoft/yii-console": "Add error catching to console application"
     },
     "autoload": {
         "psr-4": {
@@ -54,7 +58,8 @@
         "config-plugin": {
             "params": "params.php",
             "providers": "providers.php",
-            "common": "common.php"
+            "common": "common.php",
+            "events-console": "events-console.php"
         }
     },
     "config": {
