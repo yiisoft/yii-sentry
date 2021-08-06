@@ -57,7 +57,7 @@
         },
         "config-plugin": {
             "params": "params.php",
-            "providers": "providers.php",
+            "bootstrap": "bootstrap.php",
             "common": "common.php",
             "events-console": "events-console.php"
         }
