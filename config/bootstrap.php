@@ -9,7 +9,6 @@ use Sentry\Options;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
 use Sentry\Transport\TransportFactoryInterface;
-use Yiisoft\Di\Container;
 
 return [
     static function (ContainerInterface $container) {
@@ -26,5 +25,5 @@ return [
         $hub->bindClient($client);
 
         SentrySdk::setCurrentHub($hub);
-    }
+    },
 ];
