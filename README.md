@@ -62,7 +62,7 @@ return [
     'yiisoft/yii-sentry' => [
         'enabled' => true,
         'options' => [
-            // ...
+            'environment' => getenv('YII_ENV'),
         ]
         'dsn' => '', // <-- here
     ],
@@ -74,11 +74,8 @@ Error collection could be turned off by setting `enabled` to `false`.
 
 Console errors are captured by default, there is no need to configure anything.
 
-## Additional configuration
-
-In the above, `options` is where you can set additional Sentry configuration:
-
-TODO: example.
+The `options` is where you can pass additional Sentry configuration.
+[See official Sentry docs for keys and values](https://docs.sentry.io/platforms/php/configuration/options/).
 
 ## Unit testing
 
