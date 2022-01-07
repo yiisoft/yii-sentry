@@ -18,7 +18,7 @@ The package provides [Sentry](https://sentry.io/) integration for Yii Framework
 
 ## Installation
 
-The package needs PSR-compatible HTTP client so require it and this package as well:
+The package needs PSR-compatible HTTP client so require it additionally to this package:
 
 ```
 composer install php-http/guzzle7-adapter
