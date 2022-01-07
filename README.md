@@ -18,13 +18,64 @@ The package provides [Sentry](https://sentry.io/) integration for Yii Framework
 
 ## Installation
 
-The package could be installed with composer:
+The package needs PSR-compatible HTTP client so require it additionally to this package:
 
 ```
+composer install php-http/guzzle7-adapter
+composer install php-http/httplug
 composer install yiisoft/yii-sentry
 ```
 
-## General usage
+Configure HTTP client (usually that is `config/common/sentry.php`):
+
+```php
+<?php
+
+declare(strict_types=1);
+
+return [
+    \Http\Client\HttpClient::class => \GuzzleHttp\Client::class,
+    \Http\Client\HttpAsyncClient::class => [
+        'class' => \Http\Adapter\Guzzle7\Client::class,
+        '__construct()' => [
+            \Yiisoft\Factory\Definition\Reference::to(\GuzzleHttp\Client::class),
+        ],
+    ],
+];
+```
+
+Then add `SentryMiddleware` to main application middleware stack and configure DSN in `config/params.php`: 
+
+```php
+return [
+    // ...
+    'middlewares' => [
+        ErrorCatcher::class,
+        SentryMiddleware::class, // <-- here
+        SessionMiddleware::class,
+        CookieMiddleware::class,
+        CookieLoginMiddleware::class,
+        LocaleMiddleware::class,
+        Router::class,
+    ],
+    // ...
+    'yiisoft/yii-sentry' => [
+        'enabled' => true,
+        'options' => [
+            'environment' => getenv('YII_ENV'),
+        ]
+        'dsn' => '', // <-- here
+    ],
+    // ...
+]
+```
+
+Error collection could be turned off by setting `enabled` to `false`.
+
+Console errors are captured by default, there is no need to configure anything.
+
+The `options` is where you can pass additional Sentry configuration.
+[See official Sentry docs for keys and values](https://docs.sentry.io/platforms/php/configuration/options/).
 
 ## Unit testing
 
