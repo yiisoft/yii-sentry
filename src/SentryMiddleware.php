@@ -11,6 +11,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Sentry\State\HubInterface;
 use Throwable;
 
+/**
+ * SentryMiddleware catches web application exceptions and forwards them to Sentry.
+ * In order to catch all exceptions, add it right after `ErrorCatcher` in the main middleware set.
+ */
 final class SentryMiddleware implements MiddlewareInterface
 {
     private HubInterface $hub;

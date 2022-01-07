@@ -44,7 +44,7 @@ return [
 ];
 ```
 
-Then add `SentryMiddleware` to main application middleware stack and configure DSN in `config/params.php`: 
+Then add `SentryMiddleware` to main application middleware set and configure DSN in `config/params.php`: 
 
 ```php
 return [

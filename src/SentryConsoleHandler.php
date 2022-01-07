@@ -8,7 +8,7 @@ use Sentry\State\HubInterface;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 
 /**
- * Catches console application error and forwards them to Sentry.
+ * Catches console application exceptions and forwards them to Sentry.
  */
 final class SentryConsoleHandler
 {
