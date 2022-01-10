@@ -30,7 +30,7 @@
         "php-http/guzzle7-adapter": "^1.0",
         "php-http/httplug": "^2.2",
         "phpunit/phpunit": "^9.5",
-        "roave/infection-static-analysis-plugin": "^1.6",
+        "roave/infection-static-analysis-plugin": "^1.14",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.3",
         "yiisoft/yii-console": "^1.0"
