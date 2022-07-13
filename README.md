@@ -22,7 +22,6 @@ The package needs PSR-compatible HTTP client so require it additionally to this 
 
 ```
 composer install php-http/guzzle7-adapter
-composer install php-http/httplug
 composer install yiisoft/yii-sentry
 ```
 
@@ -33,12 +32,18 @@ Configure HTTP client (usually that is `config/common/sentry.php`):
 
 declare(strict_types=1);
 
+use GuzzleHttp\Client as GuzzleClient;
+use Http\Adapter\Guzzle7\Client as GuzzleClientAdapter;
+use Http\Client\HttpAsyncClient;
+use Http\Client\HttpClient;
+use Yiisoft\Definitions\Reference;
+
 return [
-    \Http\Client\HttpClient::class => \GuzzleHttp\Client::class,
-    \Http\Client\HttpAsyncClient::class => [
-        'class' => \Http\Adapter\Guzzle7\Client::class,
+    HttpClient::class => GuzzleClient::class,
+    HttpAsyncClient::class => [
+        'class' => GuzzleClientAdapter::class,
         '__construct()' => [
-            \Yiisoft\Factory\Definition\Reference::to(\GuzzleHttp\Client::class),
+            Reference::to(GuzzleClient::class),
         ],
     ],
 ];
@@ -62,20 +67,20 @@ return [
     'yiisoft/yii-sentry' => [
         'enabled' => true,
         'options' => [
-            'environment' => getenv('YII_ENV'),
-        ]
-        'dsn' => '', // <-- here
+            // <-- here. Set to `null` to disable error sending (note that it only prevents sending them via HTTP). To
+            // disable interactions with Sentry SDK completely, remove middleware and the rest of the config.
+            'dsn' => '...',  
+            'environment' => getenv('YII_ENV'),            
+        ],
     ],
     // ...
 ]
 ```
 
-Error collection could be turned off by setting `enabled` to `false`.
-
 Console errors are captured by default, there is no need to configure anything.
 
-The `options` is where you can pass additional Sentry configuration.
-[See official Sentry docs for keys and values](https://docs.sentry.io/platforms/php/configuration/options/).
+In `options` you can also pass additional Sentry configuration. See 
+[official Sentry docs](https://docs.sentry.io/platforms/php/configuration/options/) for keys and values.
 
 ## Unit testing
 
