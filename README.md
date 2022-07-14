@@ -69,8 +69,8 @@ return [
         'options' => [
             // <-- here. Set to `null` to disable error sending (note that it only prevents sending them via HTTP). To
             // disable interactions with Sentry SDK completely, remove middleware and the rest of the config.
-            'dsn' => '...',  
-            'environment' => getenv('YII_ENV'),            
+            'dsn' => '...',
+            'environment' => getenv('YII_ENV'),
         ],
     ],
     // ...
