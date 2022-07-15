@@ -6,20 +6,30 @@ declare(strict_types=1);
  * @var $params array
  */
 
+use Composer\InstalledVersions;
+use Sentry\Client as SentryClient;
+use Sentry\HttpClient\HttpClientFactory;
+use Sentry\HttpClient\HttpClientFactoryInterface;
+use Sentry\Options;
+use Sentry\State\Hub;
+use Sentry\State\HubInterface;
+use Sentry\Transport\DefaultTransportFactory;
+use Sentry\Transport\TransportFactoryInterface;
+
 return [
-    \Sentry\Transport\TransportFactoryInterface::class => \Sentry\Transport\DefaultTransportFactory::class,
-    \Sentry\HttpClient\HttpClientFactoryInterface::class => [
-        'class' => \Sentry\HttpClient\HttpClientFactory::class,
+    TransportFactoryInterface::class => DefaultTransportFactory::class,
+    HttpClientFactoryInterface::class => [
+        'class' => HttpClientFactory::class,
         '__construct()' => [
-            'sdkIdentifier' => \Sentry\Client::SDK_IDENTIFIER,
-            'sdkVersion' => \Composer\InstalledVersions::getPrettyVersion('sentry/sentry'),
+            'sdkIdentifier' => SentryClient::SDK_IDENTIFIER,
+            'sdkVersion' => InstalledVersions::getPrettyVersion('sentry/sdk'),
         ],
     ],
-    \Sentry\Options::class => [
-        'class' => \Sentry\Options::class,
+    Options::class => [
+        'class' => Options::class,
         '__construct()' => [
             $params['yiisoft/yii-sentry']['options'],
         ],
     ],
-    \Sentry\State\HubInterface::class => \Sentry\State\Hub::class,
+    HubInterface::class => Hub::class,
 ];
