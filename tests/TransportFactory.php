@@ -12,8 +12,7 @@ final class TransportFactory implements TransportFactoryInterface
 {
     public function __construct(
         private string $eventKey
-    )
-    {
+    ) {
     }
 
     public function create(Options $options): TransportInterface

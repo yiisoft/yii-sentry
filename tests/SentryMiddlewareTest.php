@@ -22,7 +22,7 @@ final class SentryMiddlewareTest extends TestCase
     public function testProcessWithException(): void
     {
         $methodName = debug_backtrace()[0]['function'];
-        $eventKey = get_class($this) . "::$methodName()";
+        $eventKey = self::class . "::$methodName()";
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Sentry test.');
@@ -57,7 +57,7 @@ final class SentryMiddlewareTest extends TestCase
     public function testProcessWithoutException(): void
     {
         $methodName = debug_backtrace()[0]['function'];
-        $eventKey = get_class($this) . "::$methodName()";
+        $eventKey = self::class . "::$methodName()";
 
         $response = $this
             ->createSentryMiddleware($eventKey)
