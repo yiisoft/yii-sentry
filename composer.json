@@ -28,6 +28,7 @@
     },
     "require-dev": {
         "guzzlehttp/guzzle": "^7.3",
+        "httpsoft/http-message": "^1.0.9",
         "php-http/guzzle7-adapter": "^1.0",
         "php-http/httplug": "^2.2",
         "phpunit/phpunit": "^9.5",

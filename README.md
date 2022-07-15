@@ -77,7 +77,7 @@ return [
 ]
 ```
 
-Console errors are captured by default, there is no need to configure anything.
+Note that fatal errors are handled too. Console errors are captured by default, there is no need to configure anything.
 
 In `options` you can also pass additional Sentry configuration. See 
 [official Sentry docs](https://docs.sentry.io/platforms/php/configuration/options/) for keys and values.
