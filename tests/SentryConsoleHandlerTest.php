@@ -23,7 +23,7 @@ final class SentryConsoleHandlerTest extends TestCase
     public function testHandleWithException(): void
     {
         $methodName = debug_backtrace()[0]['function'];
-        $eventKey = get_class($this) . "::$methodName()";
+        $eventKey = self::class . "::$methodName()";
 
         $listeners = (new ListenerCollection())->add(function (ConsoleErrorEvent $event) use ($eventKey) {
             $handler = new SentryConsoleHandler($this->createSentryHub($eventKey));

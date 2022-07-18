@@ -61,7 +61,7 @@ final class SentryMiddlewareTest extends TestCase
     public function testProcessWithoutException(): void
     {
         $methodName = debug_backtrace()[0]['function'];
-        $eventKey = get_class($this) . "::$methodName()";
+        $eventKey = self::class . "::$methodName()";
 
         $middleware = new SentryMiddleware($this->createSentryHub($eventKey));
         $response = $middleware->process(
