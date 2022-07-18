@@ -16,15 +16,33 @@ use Yiisoft\Yii\Console\Application;
 use Yiisoft\Yii\Console\CommandLoader;
 use Yiisoft\Yii\Console\SymfonyEventDispatcher;
 use Yiisoft\Yii\Sentry\SentryConsoleHandler;
-use Yiisoft\Yii\Sentry\Tests\Stub\ErrorCommand;
+use Yiisoft\Yii\Sentry\Tests\Stub\ExceptionCommand;
+use Yiisoft\Yii\Sentry\Tests\Stub\FatalErrorCommand;
+use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
 
 final class SentryConsoleHandlerTest extends TestCase
 {
     public function testHandleWithException(): void
     {
         $methodName = debug_backtrace()[0]['function'];
-        $eventKey = get_class($this) . "::$methodName()";
+        $eventKey = self::class . "::$methodName()";
 
+
+        $this->createAndRunAppWithEventHandler($eventKey, ExceptionCommand::class);
+        $this->assertTransportHasException('RuntimeException', 'Console exception test.', $eventKey);
+    }
+
+    public function testHandleWithFatalError(): void
+    {
+        $methodName = debug_backtrace()[0]['function'];
+        $eventKey = self::class . "::$methodName()";
+
+        $this->createAndRunAppWithEventHandler($eventKey, FatalErrorCommand::class);
+        $this->assertTransportHasException('PHPUnit\Framework\Error\Error', 'Console fatal error test.', $eventKey);
+    }
+
+    private function createAndRunAppWithEventHandler(string $eventKey, string $commandClass): void
+    {
         $listeners = (new ListenerCollection())->add(function (ConsoleErrorEvent $event) use ($eventKey) {
             $handler = new SentryConsoleHandler($this->createSentryHub($eventKey));
             $handler->handle($event);
@@ -36,12 +54,26 @@ final class SentryConsoleHandlerTest extends TestCase
         $app = new Application();
         $app->setCommandLoader(new CommandLoader(
             new Container(ContainerConfig::create()),
-            ['test/error' => ErrorCommand::class],
+            ['test/command' => $commandClass],
         ));
         $app->setAutoExit(false);
         $app->setDispatcher($dispatcher);
-        $app->run(new StringInput('test/error'), new NullOutput());
+        $app->run(new StringInput('test/command'), new NullOutput());
+    }
 
-        $this->assertTransportHasException('RuntimeException', 'Sentry console test.', $eventKey);
+    public function testHandleWithoutError(): void
+    {
+        $methodName = debug_backtrace()[0]['function'];
+        $eventKey = self::class . "::$methodName()";
+
+        $app = new Application();
+        $app->setCommandLoader(new CommandLoader(
+            new Container(ContainerConfig::create()),
+            ['test/no-error' => ExceptionCommand::class],
+        ));
+        $app->setAutoExit(false);
+        $app->run(new StringInput('test/no-error'), new NullOutput());
+
+        $this->assertArrayNotHasKey($eventKey, Transport::$events);
     }
 }

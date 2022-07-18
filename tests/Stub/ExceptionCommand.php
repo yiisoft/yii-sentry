@@ -9,10 +9,10 @@ use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class ErrorCommand extends BaseCommand
+final class ExceptionCommand extends BaseCommand
 {
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        throw new RuntimeException('Sentry console test.');
+        throw new RuntimeException('Console exception test.');
     }
 }
