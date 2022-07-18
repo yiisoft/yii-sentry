@@ -5,8 +5,7 @@ declare(strict_types=1);
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Yiisoft\Yii\Sentry\SentryConsoleHandler;
 
-$enabled = (bool)($params['yiisoft/yii-sentry']['options']['dsn'] ?? false);
-
+$enabled = $params['yiisoft/yii-sentry']['handleConsoleErrors'] ?? false;
 if (!$enabled) {
     return [];
 }

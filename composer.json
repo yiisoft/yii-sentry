@@ -24,7 +24,7 @@
         "psr/http-server-handler": "^1.0",
         "sentry/sdk": "^3.2",
         "yiisoft/di": "^1.0",
-        "symfony/console": "^6.0"
+        "symfony/console": "^5.4|^6.0"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "^7.3",
@@ -35,10 +35,12 @@
         "roave/infection-static-analysis-plugin": "^1.16",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.18",
+        "yiisoft/yii-event": "^1.0",
         "yiisoft/yii-console": "^1.0"
     },
     "suggest": {
-        "yiisoft/yii-console": "Add error catching to console application"
+        "yiisoft/yii-console": "Add error catching to console application",
+        "yiisoft/yii-event": "Add error catching to console application"
     },
     "autoload": {
         "psr-4": {

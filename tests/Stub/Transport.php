@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Sentry\Tests;
+namespace Yiisoft\Yii\Sentry\Tests\Stub;
 
 use GuzzleHttp\Promise\FulfilledPromise;
 use GuzzleHttp\Promise\PromiseInterface;

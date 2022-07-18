@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Sentry\Tests;
+namespace Yiisoft\Yii\Sentry\Tests\Stub;
 
 use Sentry\Options;
 use Sentry\Transport\TransportFactoryInterface;

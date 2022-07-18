@@ -49,7 +49,8 @@ return [
 ];
 ```
 
-Then add `SentryMiddleware` to main application middleware set and configure DSN in `config/params.php`: 
+Then add `SentryMiddleware` to main application middleware set and configure DSN in `config/params.php`. Console errors 
+are captured by default, there is no need to configure anything. 
 
 ```php
 return [
@@ -65,19 +66,20 @@ return [
     ],
     // ...
     'yiisoft/yii-sentry' => [
-        'enabled' => true,
+        'handleConsoleErrors' => false, // Add to disable console errors.
         'options' => [
-            // <-- here. Set to `null` to disable error sending (note that it only prevents sending them via HTTP). To
-            // disable interactions with Sentry SDK completely, remove middleware and the rest of the config.
+            // Set to `null` to disable error sending (note that in case of web application errors it only prevents
+            // sending them via HTTP). To disable interactions with Sentry SDK completely, remove middleware and the
+            // rest of the config.
             'dsn' => '...',
-            'environment' => getenv('YII_ENV'),
+            'environment' => getenv('YII_ENV'), // Add to separate "production" / "staging" environment errors.
         ],
     ],
     // ...
 ]
 ```
 
-Note that fatal errors are handled too. Console errors are captured by default, there is no need to configure anything.
+Note that fatal errors are handled too.
 
 In `options` you can also pass additional Sentry configuration. See 
 [official Sentry docs](https://docs.sentry.io/platforms/php/configuration/options/) for keys and values.

@@ -6,16 +6,13 @@ namespace Yiisoft\Yii\Sentry\Tests;
 
 use HttpSoft\Message\Response;
 use HttpSoft\Message\ServerRequest;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Error\Warning;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
-use Sentry\ClientBuilder;
-use Sentry\Options;
-use Sentry\SentrySdk;
-use Sentry\State\Hub;
 use Yiisoft\Yii\Sentry\SentryMiddleware;
+use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
 
 final class SentryMiddlewareTest extends TestCase
 {
@@ -25,30 +22,37 @@ final class SentryMiddlewareTest extends TestCase
         $eventKey = get_class($this) . "::$methodName()";
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Sentry test.');
+        $this->expectExceptionMessage('Exception test.');
 
         try {
-            $this
-                ->createSentryMiddleware($eventKey)
-                ->process(
-                    new ServerRequest(method: 'GET', uri: '/'),
-                    $this->createRequestHandlerWithException(),
-                );
+            $middleware = new SentryMiddleware($this->createSentryHub($eventKey));
+            $middleware->process(
+                new ServerRequest(method: 'GET', uri: '/'),
+                $this->createRequestHandlerWithException(),
+            );
         } catch (RuntimeException $e) {
-            $this->assertCount(1, Transport::$events[$eventKey]);
-            $this->assertCount(1, Transport::$events[$eventKey][0]->getExceptions());
-            $this->assertEquals(
-                'RuntimeException',
-                Transport::$events[$eventKey][0]
-                    ->getExceptions()[0]
-                    ->getType()
+            $this->assertTransportHasException('RuntimeException', 'Exception test.', $eventKey);
+
+            throw $e;
+        }
+    }
+
+    public function testProcessWithFatalError(): void
+    {
+        $methodName = debug_backtrace()[0]['function'];
+        $eventKey = get_class($this) . "::$methodName()";
+
+        $this->expectWarning();
+        $this->expectExceptionMessage('Fatal error test.');
+
+        try {
+            $middleware = new SentryMiddleware($this->createSentryHub($eventKey));
+            $middleware->process(
+                new ServerRequest(method: 'GET', uri: '/'),
+                $this->createRequestHandlerWithFatalError(),
             );
-            $this->assertEquals(
-                'Sentry test.',
-                Transport::$events[$eventKey][0]
-                    ->getExceptions()[0]
-                    ->getValue()
-            );
+        } catch (Warning $e) {
+            $this->assertTransportHasException('PHPUnit\Framework\Error\Warning', 'Fatal error test.', $eventKey);
 
             throw $e;
         }
@@ -59,30 +63,14 @@ final class SentryMiddlewareTest extends TestCase
         $methodName = debug_backtrace()[0]['function'];
         $eventKey = get_class($this) . "::$methodName()";
 
-        $response = $this
-            ->createSentryMiddleware($eventKey)
-            ->process(
-                new ServerRequest(method: 'GET', uri: '/', headers: ['Accept' => ['text/plain;q=2.0']]),
-                $this->createRequestHandlerWithoutException(),
-            );
+        $middleware = new SentryMiddleware($this->createSentryHub($eventKey));
+        $response = $middleware->process(
+            new ServerRequest(method: 'GET', uri: '/', headers: ['Accept' => ['text/plain;q=2.0']]),
+            $this->createRequestHandlerWithoutException(),
+        );
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertCount(0, Transport::$events[$eventKey]);
-    }
-
-    private function createSentryMiddleware(string $eventKey): SentryMiddleware
-    {
-        $clientBuilder = new ClientBuilder(new Options());
-        $clientBuilder->setTransportFactory(new TransportFactory($eventKey));
-
-        $client = $clientBuilder->getClient();
-
-        $hub = new Hub();
-        $hub->bindClient($client);
-
-        SentrySdk::setCurrentHub($hub);
-
-        return new SentryMiddleware($hub);
     }
 
     private function createRequestHandlerWithException(): RequestHandlerInterface
@@ -90,7 +78,17 @@ final class SentryMiddlewareTest extends TestCase
         return new class () implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
-                throw new RuntimeException('Sentry test.');
+                throw new RuntimeException('Exception test.');
+            }
+        };
+    }
+
+    private function createRequestHandlerWithFatalError(): RequestHandlerInterface
+    {
+        return new class () implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                trigger_error('Fatal error test.', E_USER_WARNING);
             }
         };
     }
