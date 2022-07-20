@@ -71,85 +71,86 @@ final class ConfigTest extends TestCase
         $this->assertInstanceOf(HttpTransport::class, $transport);
     }
 
-    public function testEventsConsoleDisabledWithDsnAndHandleConsoleErrors(): void
+    public function eventsConsoleDataProvider(): array
     {
-        $params = [
-            'yiisoft/yii-sentry' => [
-                'handleConsoleErrors' => false,
-                'options' => [
-                    'dsn' => null,
+        return [
+            'disabledWithDsnAndHandleConsoleErrors' => [
+                [
+                    'yiisoft/yii-sentry' => [
+                        'handleConsoleErrors' => false,
+                        'options' => [
+                            'dsn' => null,
+                        ],
+                    ],
+                ],
+                [],
+            ],
+            'disabledWithDsn' => [
+                [
+                    'yiisoft/yii-sentry' => [
+                        'handleConsoleErrors' => true,
+                        'options' => [
+                            'dsn' => null,
+                        ],
+                    ],
+                ],
+                [],
+            ],
+            'disabledWithHandleConsoleErrors' => [
+                [
+                    'yiisoft/yii-sentry' => [
+                        'handleConsoleErrors' => false,
+                        'options' => [
+                            'dsn' => 'http://username:password@hostname:9090/path',
+                        ],
+                    ],
+                ],
+                [],
+            ],
+            'disabledWithDefaultHandleConsoleErrorsAndDsn' => [
+                [
+                    'yiisoft/yii-sentry' => [
+                        'options' => [
+                            'dsn' => null,
+                        ],
+                    ],
+                ],
+                [],
+            ],
+            'disabledWithDefaultHandleConsoleErrors' => [
+                [
+                    'yiisoft/yii-sentry' => [
+                        'options' => [
+                            'dsn' => 'http://username:password@hostname:9090/path',
+                        ],
+                    ],
+                ],
+                [],
+            ],
+            'enabled' => [
+                [
+                    'yiisoft/yii-sentry' => [
+                        'handleConsoleErrors' => true,
+                        'options' => [
+                            'dsn' => 'http://username:password@hostname:9090/path',
+                        ],
+                    ],
+                ],
+                [
+                    'Symfony\Component\Console\Event\ConsoleErrorEvent' => [
+                        ['Yiisoft\Yii\Sentry\SentryConsoleHandler', 'handle'],
+                    ],
                 ],
             ],
         ];
-        $this->assertEquals([], $this->getEventsConsole($params));
     }
 
-    public function testEventsConsoleDisabledWithDsn(): void
+    /**
+     * @dataProvider eventsConsoleDataProvider
+     */
+    public function testEventsConsole(array $params, $expectedEventsConsole): void
     {
-        $params = [
-            'yiisoft/yii-sentry' => [
-                'handleConsoleErrors' => true,
-                'options' => [
-                    'dsn' => null,
-                ],
-            ],
-        ];
-        $this->assertEquals([], $this->getEventsConsole($params));
-    }
-
-    public function testEventsConsoleDisabledWithHandleConsoleErrors(): void
-    {
-        $params = [
-            'yiisoft/yii-sentry' => [
-                'handleConsoleErrors' => false,
-                'options' => [
-                    'dsn' => 'http://username:password@hostname:9090/path',
-                ],
-            ],
-        ];
-        $this->assertEquals([], $this->getEventsConsole($params));
-    }
-
-    public function testEventsConsoleDisabledWithDefaultHandleConsoleErrorsAndDsn(): void
-    {
-        $params = [
-            'yiisoft/yii-sentry' => [
-                'options' => [
-                    'dsn' => null,
-                ],
-            ],
-        ];
-        $this->assertEquals([], $this->getEventsConsole($params));
-    }
-
-    public function testEventsConsoleDisabledWithDefaultHandleConsoleErrors(): void
-    {
-        $params = [
-            'yiisoft/yii-sentry' => [
-                'options' => [
-                    'dsn' => 'http://username:password@hostname:9090/path',
-                ],
-            ],
-        ];
-        $this->assertEquals([], $this->getEventsConsole($params));
-    }
-
-    public function testEventsConsoleEnabled(): void
-    {
-        $params = [
-            'yiisoft/yii-sentry' => [
-                'handleConsoleErrors' => true,
-                'options' => [
-                    'dsn' => 'http://username:password@hostname:9090/path',
-                ],
-            ],
-        ];
-        $eventsConsole = [
-            'Symfony\Component\Console\Event\ConsoleErrorEvent' => [
-                ['Yiisoft\Yii\Sentry\SentryConsoleHandler', 'handle'],
-            ],
-        ];
-        $this->assertEquals($eventsConsole, $this->getEventsConsole($params));
+        $this->assertEquals($expectedEventsConsole, $this->getEventsConsole($params));
     }
 
     private function createContainer(?array $params = null): Container
