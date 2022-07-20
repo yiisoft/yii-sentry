@@ -21,9 +21,6 @@ final class Transport implements TransportInterface
         self::$events[$this->eventKey] = [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function send(Event $event): PromiseInterface
     {
         self::$events[$this->eventKey][] = $event;
