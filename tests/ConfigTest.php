@@ -8,7 +8,17 @@ use GuzzleHttp\Client as GuzzleClient;
 use Http\Adapter\Guzzle7\Client as GuzzleClientAdapter;
 use Http\Client\HttpAsyncClient;
 use Http\Client\HttpClient;
+use HttpSoft\Message\RequestFactory;
+use HttpSoft\Message\ResponseFactory;
+use HttpSoft\Message\StreamFactory;
+use HttpSoft\Message\UriFactory;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use ReflectionProperty;
 use Sentry\Client;
 use Sentry\SentrySdk;
@@ -172,6 +182,13 @@ final class ConfigTest extends TestCase
 
         $definitions = require dirname(__DIR__) . '/config/common.php';
         $additionalDefinitions = [
+            // HTTP Factories
+            StreamFactoryInterface::class => StreamFactory::class,
+            RequestFactoryInterface::class => RequestFactory::class,
+            LoggerInterface::class => NullLogger::class,
+            UriFactoryInterface::class => UriFactory::class,
+            ResponseFactoryInterface::class => ResponseFactory::class,
+            // HTTP Client
             HttpClient::class => GuzzleClient::class,
             HttpAsyncClient::class => [
                 'class' => GuzzleClientAdapter::class,
