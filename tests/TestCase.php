@@ -13,7 +13,7 @@ use Sentry\State\HubInterface;
 use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
 use Yiisoft\Yii\Sentry\Tests\Stub\TransportFactory;
 
-class TestCase extends BaseTestCase
+abstract class TestCase extends BaseTestCase
 {
     protected function createSentryHub(string $eventKey): HubInterface
     {
