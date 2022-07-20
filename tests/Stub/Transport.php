@@ -28,9 +28,6 @@ final class Transport implements TransportInterface
         return new FulfilledPromise(new Response(ResponseStatus::skipped(), $event));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function close(?int $timeout = null): PromiseInterface
     {
         return new FulfilledPromise(true);
