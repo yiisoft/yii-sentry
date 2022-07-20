@@ -17,11 +17,8 @@ use Throwable;
  */
 final class SentryMiddleware implements MiddlewareInterface
 {
-    private HubInterface $hub;
-
-    public function __construct(HubInterface $hub)
+    public function __construct(private HubInterface $hub)
     {
-        $this->hub = $hub;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
