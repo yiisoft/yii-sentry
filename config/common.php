@@ -2,10 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * @var $params array
- */
-
 use Composer\InstalledVersions;
 use Sentry\Client as SentryClient;
 use Sentry\HttpClient\HttpClientFactory;
@@ -15,6 +11,10 @@ use Sentry\State\Hub;
 use Sentry\State\HubInterface;
 use Sentry\Transport\DefaultTransportFactory;
 use Sentry\Transport\TransportFactoryInterface;
+
+/**
+ * @var $params array
+ */
 
 return [
     TransportFactoryInterface::class => DefaultTransportFactory::class,

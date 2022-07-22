@@ -11,7 +11,7 @@ use Sentry\State\HubInterface;
 use Sentry\Transport\TransportFactoryInterface;
 
 return [
-    static function (ContainerInterface $container) {
+    static function (ContainerInterface $container): void {
         $options = $container->get(Options::class);
 
         $clientBuilder = new ClientBuilder($options);

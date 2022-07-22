@@ -18,14 +18,24 @@ The package provides [Sentry](https://sentry.io/) integration for Yii Framework
 
 ## Installation
 
-The package needs PSR-compatible HTTP client so require it additionally to this package:
+The package needs PSR-compatible HTTP client and factories so require it additionally to this package:
 
-```
+```bash
+composer install httpsoft/http-message
 composer install php-http/guzzle7-adapter
 composer install yiisoft/yii-sentry
 ```
 
-Configure HTTP client (usually that is `config/common/sentry.php`):
+The first two can be replaced to other packages of your choice.
+
+For handling console errors `yii-console` and `yii-event` packages are required additionally:
+
+```bash
+composer install yiisoft/yii-console
+composer install yiisoft/yii-event
+```
+
+Configure HTTP factories and client (usually that is `config/common/sentry.php`):
 
 ```php
 <?php
@@ -36,9 +46,26 @@ use GuzzleHttp\Client as GuzzleClient;
 use Http\Adapter\Guzzle7\Client as GuzzleClientAdapter;
 use Http\Client\HttpAsyncClient;
 use Http\Client\HttpClient;
+use HttpSoft\Message\RequestFactory;
+use HttpSoft\Message\ResponseFactory;
+use HttpSoft\Message\StreamFactory;
+use HttpSoft\Message\UriFactory;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\UriFactoryInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Yiisoft\Definitions\Reference;
 
 return [
+    // HTTP Factories
+    StreamFactoryInterface::class => StreamFactory::class,
+    RequestFactoryInterface::class => RequestFactory::class,
+    LoggerInterface::class => NullLogger::class,
+    UriFactoryInterface::class => UriFactory::class,
+    ResponseFactoryInterface::class => ResponseFactory::class,
+    // HTTP Client
     HttpClient::class => GuzzleClient::class,
     HttpAsyncClient::class => [
         'class' => GuzzleClientAdapter::class,
@@ -49,7 +76,8 @@ return [
 ];
 ```
 
-Then add `SentryMiddleware` to main application middleware set and configure DSN in `config/params.php`: 
+Then add `SentryMiddleware` to main application middleware set and configure DSN in `config/params.php`. Console errors 
+are captured by default, there is no need to configure anything. 
 
 ```php
 return [
@@ -65,19 +93,20 @@ return [
     ],
     // ...
     'yiisoft/yii-sentry' => [
-        'enabled' => true,
+        'handleConsoleErrors' => false, // Add to disable console errors.
         'options' => [
-            // <-- here. Set to `null` to disable error sending (note that it only prevents sending them via HTTP). To
-            // disable interactions with Sentry SDK completely, remove middleware and the rest of the config.
-            'dsn' => '...',
-            'environment' => getenv('YII_ENV'),
+            // Set to `null` to disable error sending (note that in case of web application errors it only prevents
+            // sending them via HTTP). To disable interactions with Sentry SDK completely, remove middleware and the
+            // rest of the config.
+            'dsn' => $_ENV['SENTRY_DSN'] ?? null,
+            'environment' => $_ENV['YII_ENV'] ?? null, // Add to separate "production" / "staging" environment errors.
         ],
     ],
     // ...
 ]
 ```
 
-Console errors are captured by default, there is no need to configure anything.
+Note that fatal errors are handled too.
 
 In `options` you can also pass additional Sentry configuration. See 
 [official Sentry docs](https://docs.sentry.io/platforms/php/configuration/options/) for keys and values.

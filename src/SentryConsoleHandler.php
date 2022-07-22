@@ -12,11 +12,8 @@ use Symfony\Component\Console\Event\ConsoleErrorEvent;
  */
 final class SentryConsoleHandler
 {
-    private HubInterface $hub;
-
-    public function __construct(HubInterface $hub)
+    public function __construct(private HubInterface $hub)
     {
-        $this->hub = $hub;
     }
 
     public function handle(ConsoleErrorEvent $event): void

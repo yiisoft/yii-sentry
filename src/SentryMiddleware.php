@@ -12,16 +12,13 @@ use Sentry\State\HubInterface;
 use Throwable;
 
 /**
- * Catches web application and console exceptions and forwards them to Sentry.
+ * Catches web application exceptions and forwards them to Sentry.
  * In order to catch all exceptions, add it right after `ErrorCatcher` in the main middleware set.
  */
 final class SentryMiddleware implements MiddlewareInterface
 {
-    private HubInterface $hub;
-
-    public function __construct(HubInterface $hub)
+    public function __construct(private HubInterface $hub)
     {
-        $this->hub = $hub;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
