@@ -17,7 +17,7 @@ return [
                 }
 
                 return $event;
-            }
+            },
         ],
     ],
 ];
