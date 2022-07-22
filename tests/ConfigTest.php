@@ -153,7 +153,7 @@ final class ConfigTest extends TestCase
         $this->assertEquals($expectedEventsConsole, $this->getEventsConsole($params));
     }
 
-    private function createContainer(?array $params = null): Container
+    private function createContainer(?array $params = null): void
     {
         $container = new Container(
             ContainerConfig::create()->withDefinitions(
@@ -166,8 +166,6 @@ final class ConfigTest extends TestCase
 
         $callback = $bootstrapList[0];
         $callback($container);
-
-        return $container;
     }
 
     private function getBootstrapList(): array

@@ -2,6 +2,9 @@
     <a href="https://github.com/yiisoft" target="_blank">
         <img src="https://yiisoft.github.io/docs/images/yii_logo.svg" height="100px">
     </a>
+    <a href="https://sentry.io/" target="_blank">
+      <img src="https://sentry-brand.storage.googleapis.com/sentry-wordmark-dark-280x84.png" alt="Sentry" width="280" height="84">
+    </a>
     <h1 align="center">Yii Sentry</h1>
     <br>
 </p>
