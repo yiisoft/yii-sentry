@@ -16,6 +16,7 @@ use Yiisoft\Yii\Console\Application;
 use Yiisoft\Yii\Console\CommandLoader;
 use Yiisoft\Yii\Console\SymfonyEventDispatcher;
 use Yiisoft\Yii\Sentry\SentryConsoleHandler;
+use Yiisoft\Yii\Sentry\Tests\Stub\ErrorHandlerExceptionCommand;
 use Yiisoft\Yii\Sentry\Tests\Stub\ExceptionCommand;
 use Yiisoft\Yii\Sentry\Tests\Stub\FatalErrorCommand;
 use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
@@ -39,6 +40,15 @@ final class SentryConsoleHandlerTest extends TestCase
 
         $this->createAndRunAppWithEventHandler($eventKey, FatalErrorCommand::class);
         $this->assertTransportHasException('PHPUnit\Framework\Error\Error', 'Console fatal error test.', $eventKey);
+    }
+
+    public function testHandleWithErrorHandlerException(): void
+    {
+        $methodName = debug_backtrace()[0]['function'];
+        $eventKey = self::class . "::$methodName()";
+
+        $this->createAndRunAppWithEventHandler($eventKey, ErrorHandlerExceptionCommand::class);
+        $this->assertCount(0, Transport::$events[$eventKey]);
     }
 
     private function createAndRunAppWithEventHandler(string $eventKey, string $commandClass): void

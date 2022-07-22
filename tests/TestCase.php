@@ -17,7 +17,8 @@ abstract class TestCase extends BaseTestCase
 {
     protected function createSentryHub(string $eventKey): HubInterface
     {
-        $clientBuilder = new ClientBuilder(new Options());
+        $options = $this->getParams()['yiisoft/yii-sentry']['options'];
+        $clientBuilder = new ClientBuilder(new Options($options));
         $clientBuilder->setTransportFactory(new TransportFactory($eventKey));
 
         $client = $clientBuilder->getClient();
@@ -46,5 +47,10 @@ abstract class TestCase extends BaseTestCase
                 ->getExceptions()[0]
                 ->getValue()
         );
+    }
+
+    private function getParams(): array
+    {
+        return require dirname(__DIR__) . '/config/params.php';
     }
 }
