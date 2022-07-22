@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
+use Yiisoft\ErrorHandler\Exception\ErrorException;
 use Yiisoft\Yii\Sentry\SentryMiddleware;
 use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
 
@@ -58,6 +59,27 @@ final class SentryMiddlewareTest extends TestCase
         }
     }
 
+    public function testProcessWithErrorHandlerException(): void
+    {
+        $methodName = debug_backtrace()[0]['function'];
+        $eventKey = self::class . "::$methodName()";
+
+        $this->expectException(ErrorException::class);
+        $this->expectExceptionMessage('Error handler exception test.');
+
+        try {
+            $middleware = new SentryMiddleware($this->createSentryHub($eventKey));
+            $middleware->process(
+                new ServerRequest(method: 'GET', uri: '/'),
+                $this->createRequestHandlerWithErrorHandlerException()
+            );
+        } catch (ErrorException $e) {
+            $this->assertCount(0, Transport::$events[$eventKey]);
+
+            throw $e;
+        }
+    }
+
     public function testProcessWithoutException(): void
     {
         $methodName = debug_backtrace()[0]['function'];
@@ -89,6 +111,16 @@ final class SentryMiddlewareTest extends TestCase
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
                 trigger_error('Fatal error test.', E_USER_ERROR);
+            }
+        };
+    }
+
+    private function createRequestHandlerWithErrorHandlerException(): RequestHandlerInterface
+    {
+        return new class () implements RequestHandlerInterface {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                throw new ErrorException('Error handler exception test.');
             }
         };
     }
