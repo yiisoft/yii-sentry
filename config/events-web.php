@@ -7,7 +7,7 @@ use Yiisoft\Middleware\Dispatcher\Event\BeforeMiddleware;
 use Yiisoft\Yii\Http\Event\ApplicationShutdown;
 use Yiisoft\Yii\Sentry\Tracing\EventWebTraceHandler;
 
-if (empty($params['sentry']['options']['dsn'])) {
+if (empty($params['yiisoft/yii-sentry']['options']['dsn'])) {
     return [];
 }
 
