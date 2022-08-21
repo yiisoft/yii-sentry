@@ -17,12 +17,14 @@ final class SentryLogAdapter
 {
     /**
      * @psalm-suppress PropertyNotSetInConstructor
+     *
      * @var string|null the current application environment (staging|preprod|prod)
      */
     protected ?string $environment;
 
     /**
      * @psalm-suppress PropertyNotSetInConstructor
+     *
      * @var string|null should represent the current version of the calling
      *             software. Can be any string (git commit, version number)
      */

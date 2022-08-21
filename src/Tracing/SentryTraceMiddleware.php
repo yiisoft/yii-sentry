@@ -110,7 +110,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
 
         $context->setOp('http.server');
         $context->setData([
-            'url'    => '/' . ltrim($request->getUri()->getPath(), '/'),
+            'url' => '/' . ltrim($request->getUri()->getPath(), '/'),
             'method' => strtoupper($request->getMethod()),
         ]);
         $context->setStartTimestamp($requestStartTime);

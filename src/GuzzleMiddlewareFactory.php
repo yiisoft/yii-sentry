@@ -64,7 +64,6 @@ class GuzzleMiddlewareFactory
                     'response_headers' => $promiseResponse->getHeaders(),
                     'request_body' => $requestContentBody,
                     'response_body' => $responseContentBody,
-
                 ];
                 $this->logger->info($path, $logContext);
 
@@ -74,7 +73,6 @@ class GuzzleMiddlewareFactory
                 $requestContentBody,
                 $path,
             ) {
-
                 if ($e instanceof RequestException) {
                     $responseContentBody = $this->getResponseContentBody($e->getResponse());
                     $logContext = [

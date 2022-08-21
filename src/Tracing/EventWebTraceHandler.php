@@ -59,7 +59,7 @@ final class EventWebTraceHandler
         $currentTime = microtime(true);
         $currentClass = get_class($middleware);
 
-        if (is_null($this->prevTime) || is_null($this->prevClass)) {
+        if (null === $this->prevTime || null === $this->prevClass) {
             $this->prevTime = $currentTime;
             $this->prevClass = $currentClass;
 
@@ -93,7 +93,7 @@ final class EventWebTraceHandler
     {
         $currentTime = microtime(true);
         $currentClass = get_class($middleware);
-        if (is_null($this->prevTime)) {
+        if (null === $this->prevTime) {
             return;
         }
 
