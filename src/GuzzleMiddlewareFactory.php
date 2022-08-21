@@ -41,10 +41,9 @@ class GuzzleMiddlewareFactory
             } else {
                 $requestContentBody = $requestBody;
             }
-            /****/
             /** @var PromiseInterface $response */
             $response = $handler($request, $options);
-            /****/
+
             $requestMethod = $request->getMethod();
             $requestHeaders = $request->getHeaders();
 
@@ -57,14 +56,14 @@ class GuzzleMiddlewareFactory
             ) {
                 $responseContentBody = $this->getResponseContentBody($promiseResponse);
                 $logContext = [
-                    'time'             => $startTime,
-                    'elapsed'          => microtime(true) - $startTime,
-                    'category'         => 'guzzle.request',
-                    'method'           => $requestMethod,
-                    'request_headers'  => $requestHeaders,
+                    'time' => $startTime,
+                    'elapsed' => microtime(true) - $startTime,
+                    'category' => 'guzzle.request',
+                    'method' => $requestMethod,
+                    'request_headers' => $requestHeaders,
                     'response_headers' => $promiseResponse->getHeaders(),
-                    'request_body'     => $requestContentBody,
-                    'response_body'    => $responseContentBody,
+                    'request_body' => $requestContentBody,
+                    'response_body' => $responseContentBody,
 
                 ];
                 $this->logger->info($path, $logContext);

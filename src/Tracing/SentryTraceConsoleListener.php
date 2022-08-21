@@ -22,6 +22,7 @@ final class SentryTraceConsoleListener
      * The current active transaction.
      *
      * @psalm-suppress PropertyNotSetInConstructor
+     *
      * @var Transaction|null
      */
     protected ?Transaction $transaction;
@@ -29,6 +30,7 @@ final class SentryTraceConsoleListener
      * The span for the `app.handle` part of the application.
      *
      * @psalm-suppress PropertyNotSetInConstructor
+     *
      * @var Span|null
      */
     protected ?Span $appSpan;
@@ -36,6 +38,7 @@ final class SentryTraceConsoleListener
      * The span for the `app.handle` part of the application.
      *
      * @psalm-suppress PropertyNotSetInConstructor
+     *
      * @var Span|null
      */
     protected ?Span $bootSpan;
@@ -63,9 +66,9 @@ final class SentryTraceConsoleListener
     /**
      * @param Transaction|null $transaction
      *
-     * @return SentryTraceConsoleListener
+     * @return self
      */
-    public function setTransaction(?Transaction $transaction): SentryTraceConsoleListener
+    public function setTransaction(?Transaction $transaction): self
     {
         $this->transaction = $transaction;
 
@@ -101,7 +104,7 @@ final class SentryTraceConsoleListener
         if ($this->bootedTimestamp === null) {
             return;
         }
-        if (is_null($this->transaction)) {
+        if (null === $this->transaction) {
             return;
         }
 
@@ -156,16 +159,16 @@ final class SentryTraceConsoleListener
 
     private function startCommand(?Command $command, InputInterface $input): void
     {
-        if (is_null($this->transaction)) {
+        if (null === $this->transaction) {
             return;
         }
         $name = $command?->getName() ?? 'undefined command';
         $inputArgs = [
             'arguments' => $input->getArguments(),
-            'options'   => $input->getOptions(),
+            'options' => $input->getOptions(),
         ];
         $this->transaction->setData([
-            'name'  => $name,
+            'name' => $name,
             'input' => $inputArgs
         ]);
         $this->transaction->setName($name);

@@ -18,7 +18,7 @@ use Yiisoft\Yii\Sentry\YiiSentryConfig;
  */
 
 return [
-    YiiSentryConfig::class    => [
+    YiiSentryConfig::class => [
         '__construct()' => [
             'config' => $params['yiisoft/yii-sentry'],
         ],

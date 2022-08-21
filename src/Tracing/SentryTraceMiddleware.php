@@ -23,6 +23,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
      * The current active transaction.
      *
      * @psalm-suppress PropertyNotSetInConstructor
+     *
      * @var Transaction|null
      */
     protected $transaction;
@@ -30,6 +31,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
      * The span for the `app.handle` part of the application.
      *
      * @psalm-suppress PropertyNotSetInConstructor
+     *
      * @var Span|null
      */
     protected $appSpan;
@@ -68,9 +70,9 @@ final class SentryTraceMiddleware implements MiddlewareInterface
     /**
      * @param Transaction|null $transaction
      *
-     * @return SentryTraceMiddleware
+     * @return self
      */
-    public function setTransaction(?Transaction $transaction): SentryTraceMiddleware
+    public function setTransaction(?Transaction $transaction): self
     {
         $this->transaction = $transaction;
 
@@ -138,7 +140,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
         if ($this->bootedTimestamp === null) {
             return null;
         }
-        if (is_null($this->transaction)) {
+        if (null === $this->transaction) {
             return null;
         }
 
@@ -195,11 +197,11 @@ final class SentryTraceMiddleware implements MiddlewareInterface
             // If the transaction is not on the scope during finish, the trace.context is wrong
             SentrySdk::getCurrentHub()->setSpan($this->transaction);
 
-            if (!is_null($this->request)) {
+            if (null !== $this->request) {
                 $this->hydrateRequestData($this->request);
             }
 
-            if (!is_null($this->response)) {
+            if (null !== $this->response) {
                 $this->hydrateResponseData($this->response);
             }
 
@@ -210,7 +212,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
     private function hydrateRequestData(ServerRequestInterface $request): void
     {
         $route = $this->currentRoute;
-        if (is_null($this->transaction)) {
+        if (null === $this->transaction) {
             return;
         }
 
@@ -220,7 +222,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
             );
 
             $this->transaction->setData([
-                'name'   => Integration::extractNameForRoute($route),
+                'name' => Integration::extractNameForRoute($route),
                 'method' => $request->getMethod(),
             ]);
         }
@@ -236,7 +238,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
         if (empty($name)) {
             return;
         }
-        if (is_null($this->transaction)) {
+        if (null === $this->transaction) {
             return;
         }
         // If the transaction already has a name other than the default

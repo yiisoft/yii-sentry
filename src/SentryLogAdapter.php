@@ -17,13 +17,13 @@ final class SentryLogAdapter
 {
     /**
      * @psalm-suppress PropertyNotSetInConstructor
-     * @var null|string the current application environment (staging|preprod|prod)
+     * @var string|null the current application environment (staging|preprod|prod)
      */
     protected ?string $environment;
 
     /**
      * @psalm-suppress PropertyNotSetInConstructor
-     * @var null|string should represent the current version of the calling
+     * @var string|null should represent the current version of the calling
      *             software. Can be any string (git commit, version number)
      */
     protected ?string $release;
@@ -33,13 +33,13 @@ final class SentryLogAdapter
     protected array $levels
         = [
             LogLevel::EMERGENCY => 0,
-            LogLevel::ALERT     => 1,
-            LogLevel::CRITICAL  => 2,
-            LogLevel::ERROR     => 3,
-            LogLevel::WARNING   => 4,
-            LogLevel::NOTICE    => 5,
-            LogLevel::INFO      => 6,
-            LogLevel::DEBUG     => 7,
+            LogLevel::ALERT => 1,
+            LogLevel::CRITICAL => 2,
+            LogLevel::ERROR => 3,
+            LogLevel::WARNING => 4,
+            LogLevel::NOTICE => 5,
+            LogLevel::INFO => 6,
+            LogLevel::DEBUG => 7,
         ];
 
     public function __construct(
@@ -56,8 +56,7 @@ final class SentryLogAdapter
     {
         /** @psalm-suppress MixedAssignment */
         $exception = $context['exception'] ?? $context['throwable'] ?? null;
-        unset($context['exception']);
-        unset($context['throwable']);
+        unset($context['exception'], $context['throwable']);
 
         $this->hub->withScope(
             function (Scope $scope) use (
@@ -204,8 +203,7 @@ final class SentryLogAdapter
     {
         $category = (string)($context['category'] ?? 'log');
         $time = (float)($context['time'] ?? microtime(true));
-        unset($context['category']);
-        unset($context['time']);
+        unset($context['category'], $context['time']);
 
         if (
             array_key_exists('trace', $context)
@@ -255,7 +253,7 @@ final class SentryLogAdapter
     /**
      * Set the current application environment.
      *
-     * @param null|string $value
+     * @param string|null $value
      *
      * @return self
      */

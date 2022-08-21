@@ -77,7 +77,7 @@ class SentryWebTransactionAdapter
 
     public function commit(): ?string
     {
-        $this->logger?->info("sentry force commit");
+        $this->logger?->info('sentry force commit');
         $sentryTraceString = SentrySdk::getCurrentHub()->getSpan()?->toTraceparent();
         if (SentrySdk::getCurrentHub()->getTransaction() !== null) {
             $this->logger?->flush(true);

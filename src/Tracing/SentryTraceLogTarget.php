@@ -18,8 +18,7 @@ final class SentryTraceLogTarget extends Target
             $context = $message->context();
             $category = (string)($context['category'] ?? 'log');
             $time = (float)($message->context()['time'] ?? microtime(true));
-            unset($context['category']);
-            unset($context['time']);
+            unset($context['category'], $context['time']);
             if (
                 array_key_exists('trace', $context)
                 && empty($context['trace'])

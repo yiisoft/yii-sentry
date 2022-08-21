@@ -19,7 +19,7 @@ final class DbLoggerDecorator implements LoggerInterface
     ) {
     }
 
-    public function log($level, string|\Stringable $message, array $context = array()): void
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
         $extendedContext = $this->extendContext($context, (string)$message);
 

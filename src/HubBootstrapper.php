@@ -34,7 +34,7 @@ final class HubBootstrapper
 
     public function bootstrap(): void
     {
-        $this->options->setIntegrations(fn(array $integrations) => $this->prepareIntegrations($integrations));
+        $this->options->setIntegrations(fn (array $integrations) => $this->prepareIntegrations($integrations));
 
         $clientBuilder = new ClientBuilder($this->options);
         $clientBuilder
@@ -86,14 +86,8 @@ final class HubBootstrapper
                     // We also remove the default request integration so it can be readded
                     // after with a Laravel specific request fetcher. This way we can resolve
                     // the request from Laravel instead of constructing it from the global state
-                    if (
-                        $integration instanceof
-                        SdkIntegration\RequestIntegration
-                    ) {
-                        return false;
-                    }
-
-                    return true;
+                    return ! ($integration instanceof
+                        SdkIntegration\RequestIntegration);
                 }
             );
 
@@ -155,7 +149,7 @@ final class HubBootstrapper
                         $value = 'array';
                     } elseif (is_object($resolvedIntegration)) {
                         $value = get_class($resolvedIntegration);
-                    } elseif (is_null($resolvedIntegration)) {
+                    } elseif (null === $resolvedIntegration) {
                         $value = 'null';
                     } else {
                         $value = (string)$resolvedIntegration;

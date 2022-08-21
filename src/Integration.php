@@ -18,7 +18,7 @@ use function Sentry\configureScope;
 final class Integration implements IntegrationInterface
 {
     /**
-     * @var null|string
+     * @var string|null
      */
     private static $transaction;
 
@@ -72,13 +72,13 @@ final class Integration implements IntegrationInterface
     /**
      * Extract the readable name for a route.
      *
-     * @param null|CurrentRoute $route
+     * @param CurrentRoute|null $route
      *
      * @return string|null
      */
     public static function extractNameForRoute(?CurrentRoute $route): ?string
     {
-        if (is_null($route)) {
+        if (null === $route) {
             return null;
         }
         $routeName = null;
@@ -107,11 +107,7 @@ final class Integration implements IntegrationInterface
             return '';
         }
 
-        $content = sprintf('<meta name="sentry-trace" content="%s"/>', $span->toTraceparent());
-
-        // $content .= sprintf('<meta name="sentry-trace-data" content="%s"/>', $span->getDescription());
-
-        return $content;
+        return sprintf('<meta name="sentry-trace" content="%s"/>', $span->toTraceparent());
     }
 
     /**
@@ -167,7 +163,7 @@ final class Integration implements IntegrationInterface
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     public static function getTransaction(): ?string
     {
@@ -175,7 +171,7 @@ final class Integration implements IntegrationInterface
     }
 
     /**
-     * @param null|string $transaction
+     * @param string|null $transaction
      */
     public static function setTransaction(?string $transaction): void
     {
