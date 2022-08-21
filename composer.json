@@ -66,7 +66,8 @@
             "params": "params.php",
             "bootstrap": "bootstrap.php",
             "common": "common.php",
-            "events-console": "events-console.php"
+            "events-console": "events-console.php",
+            "events-web": "events-web.php"
         }
     },
     "config": {
