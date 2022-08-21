@@ -1,5 +1,5 @@
 {
-    "name": "yiisoft/yii-sentry",
+    "name": "gluck1986/yii-sentry",
     "type": "library",
     "description": "A Sentry integration for Yii Framework",
     "keywords": [
