@@ -28,7 +28,7 @@ final class EventWebTraceHandler
      */
     public function listen(...$params): void
     {
-        /** @var object|false $event */
+        /** @var false|object $event */
         $event = current($params);
 
         if (!is_object($event)) {
