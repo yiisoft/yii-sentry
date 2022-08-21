@@ -20,11 +20,16 @@
     "require": {
         "php": "^8.0",
         "psr/http-message": "^1.0",
-        "psr/http-server-middleware": "^1.0",
         "psr/http-server-handler": "^1.0",
+        "psr/http-server-middleware": "^1.0",
+        "psr/log": "^2.0",
         "sentry/sdk": "^3.2",
+        "symfony/console": "^5.4|^6.0",
         "yiisoft/di": "^1.0",
-        "symfony/console": "^5.4|^6.0"
+        "yiisoft/log": "^2.0",
+        "yiisoft/router": "^1.1",
+        "yiisoft/router-fastroute": "^1.1",
+        "yiisoft/yii-http": "^1.0"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "^7.3",
@@ -33,10 +38,11 @@
         "phpunit/phpunit": "^9.5",
         "roave/infection-static-analysis-plugin": "^1.16",
         "spatie/phpunit-watcher": "^1.23",
+        "squizlabs/php_codesniffer": "^3.7",
         "vimeo/psalm": "^4.18",
         "yiisoft/error-handler": "^2.1",
-        "yiisoft/yii-event": "^1.0",
-        "yiisoft/yii-console": "^1.0"
+        "yiisoft/yii-console": "^1.0",
+        "yiisoft/yii-event": "^1.0"
     },
     "suggest": {
         "yiisoft/yii-console": "Add error catching to console application",

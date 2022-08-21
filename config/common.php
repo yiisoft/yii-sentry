@@ -11,12 +11,18 @@ use Sentry\State\Hub;
 use Sentry\State\HubInterface;
 use Sentry\Transport\DefaultTransportFactory;
 use Sentry\Transport\TransportFactoryInterface;
+use Yiisoft\Yii\Sentry\YiiSentryConfig;
 
 /**
  * @var $params array
  */
 
 return [
+    YiiSentryConfig::class    => [
+        '__construct()' => [
+            'config' => $params['yiisoft/yii-sentry'],
+        ],
+    ],
     TransportFactoryInterface::class => DefaultTransportFactory::class,
     HttpClientFactoryInterface::class => [
         'class' => HttpClientFactory::class,
@@ -31,5 +37,6 @@ return [
             $params['yiisoft/yii-sentry']['options'],
         ],
     ],
+
     HubInterface::class => Hub::class,
 ];

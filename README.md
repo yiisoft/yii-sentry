@@ -79,37 +79,148 @@ return [
 ];
 ```
 
-Then add `SentryMiddleware` to main application middleware set and configure DSN in `config/params.php`. Console errors 
-are captured by default, there is no need to configure anything. 
+if you want to trace guzzle requests and add sentry headers to external queries, add this
 
+```php 
+    GuzzleHttp\Client::class => static function (ContainerInterface $container) {
+        $stack = new HandlerStack();
+        $stack->setHandler(new CurlHandler());
+        $factory = $container->get(GuzzleMiddlewareFactory::class);
+        $middleware = static function (callable $handler) use ($factory): callable {
+            return $factory->factory($handler);
+        };
+
+        $stack->push($middleware);
+
+        return new GuzzleHttp\Client([
+            'handler' => $stack,
+        ]);
+    },
+```
+
+
+**Configure:**
+
+add code block below to your params.php
+and type your DSN
+also you can define your environment and release, for example TAG from gitlab.ci
+```php 
+    'yiisoft/yii-sentry' =>
+        [
+            'options' => [
+                'dsn' => '',
+                'environment' => 'local', //SENTRY_ENVIRONMENT, //YII_ENV,
+                'release' => 'dev',  //SENTRY_RELEASE, //TAG
+                // @see: https://docs.sentry.io/platforms/php/configuration/options/#send-default-pii
+                'send_default_pii' => true,
+                'traces_sample_rate' => 1.0,
+            ],
+            'handleConsoleErrors' => true,
+            'log_level' => 'warning',
+            'tracing'          => [
+                // Indicates if the tracing integrations supplied by Sentry should be loaded
+                'default_integrations'   => true,
+            ],
+        ]
+```
+
+add APP_START_TIME const into index.php and yii.php
 ```php
+define('APP_START_TIME', microtime(true));
+```
+
+add log targets for breadcrumbs and tracing in app/config/common/logger.php
+or another config file with logger settings
+
+```php 
 return [
-    // ...
-    'middlewares' => [
-        ErrorCatcher::class,
-        SentryMiddleware::class, // <-- here
-        SessionMiddleware::class,
-        CookieMiddleware::class,
-        CookieLoginMiddleware::class,
-        LocaleMiddleware::class,
-        Router::class,
-    ],
-    // ...
-    'yiisoft/yii-sentry' => [
-        'handleConsoleErrors' => false, // Add to disable console errors.
-        'options' => [
-            // Set to `null` to disable error sending (note that in case of web application errors it only prevents
-            // sending them via HTTP). To disable interactions with Sentry SDK completely, remove middleware and the
-            // rest of the config.
-            'dsn' => $_ENV['SENTRY_DSN'] ?? null,
-            'environment' => $_ENV['YII_ENV'] ?? null, // Add to separate "production" / "staging" environment errors.
-        ],
-    ],
-    // ...
+    LoggerInterface::class => static function (
+        /** your_another_log_target $your_log_target */
+        \Yiisoft\Yii\Sentry\SentryBreadcrumbLogTarget $sentryLogTarget,
+        Yiisoft\Yii\Sentry\Tracing\SentryTraceLogTarget $sentryTraceLogTarget
+    ) {
+        return new Logger([
+        /** $your_log_target */
+            $sentryLogTarget,
+            $sentryTraceLogTarget
+        ]);
+    }
+];
+```
+**if you want to see your logs in sentry timeline**, you need to use keys (float)'**time**' and (float)'**elapsed**' in log context array
+_____
+
+add DB log decorator for tracing db queries in app/config/params.php
+```php
+'yiisoft/yii-cycle' => [
+        // DBAL config
+        'dbal' => [
+            // SQL query logger. Definition of Psr\Log\LoggerInterface
+            // For example, \Yiisoft\Yii\Cycle\Logger\StdoutQueryLogger::class
+            'query-logger' => \Yiisoft\Yii\Sentry\DbLoggerDecorator::class,
+            /**
+            * ...
+            * your another db settings 
+            **/
+    ]
 ]
 ```
 
-Note that fatal errors are handled too.
+add into app/config/params.php into middleware section  SetRequestIpMiddleware
+```php
+    'middlewares' => [
+        ErrorCatcher::class,
+        \Yiisoft\Yii\Sentry\Http\SetRequestIpMiddleware::class, //add this
+        Router::class,
+    ],
+```
+
+add into app/config/common/router.php tracing middleware
+```php
+  RouteCollectionInterface::class => static function (RouteCollectorInterface $collector) use ($config) {
+        $collector
+            ->middleware(FormatDataResponse::class)
+            ->middleware(JsonParseMiddleware::class)
+            ->middleware(ExceptionMiddleware::class)
+            ->middleware(\Yiisoft\Yii\Sentry\Tracing\SentryTraceMiddleware::class) // add this
+            ->addGroup(
+                Group::create('')
+                    ->routes(...$config->get('routes'))
+            );
+
+        return new RouteCollection($collector);
+    },
+ ```
+
+________
+
+
+
+
+if your transaction too heavy you can slice it to several transactions with clearing log buffer.
+
+use SentryConsoleTransactionAdapter or SentryWebTransactionAdapter
+
+for example:
+
+```php
+        /** some code with default transaction */
+        /** commit default transaction and send data to sentry server */
+        $sentryTraceString = $this->sentryTransactionAdapter->commit();
+        while ($currentDate <= $endDate) {
+            $this->sentryTransactionAdapter->begin($sentryTraceString)
+                ->setName('my_heavy_operation/iteration')
+                ->setData(['date' => $currentDate->format('Y-m-d')]);
+
+            $this->process($currentDate, $sentryTraceString);
+            $this->sentryTransactionAdapter->commit();
+        }
+        $this->sentryTransactionAdapter->begin($sentryTraceString)
+            ->setName('my_heavy_operation done, terminating application');
+    /** transaction will commit when application is terminated */
+```
+for this example all new transactions will linked to transaction with $sentryTraceString
+
 
 In `options` you can also pass additional Sentry configuration. See 
 [official Sentry docs](https://docs.sentry.io/platforms/php/configuration/options/) for keys and values.

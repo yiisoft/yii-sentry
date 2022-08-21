@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  cli:
+    build:
+      context: ./
+      dockerfile: ./docker/php/Dockerfile
+      target: php-cli
+    working_dir: /app
