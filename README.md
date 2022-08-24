@@ -127,8 +127,7 @@ Add `APP_START_TIME` constant into `index.php` and `yii.php`:
 define('APP_START_TIME', microtime(true));
 ```
 
-add log targets for breadcrumbs and tracing in app/config/common/logger.php
-or another config file with logger settings
+Add log targets for breadcrumbs and tracing to `app/config/common/logger.php` or another config file with logger settings:
 
 ```php 
 return [
