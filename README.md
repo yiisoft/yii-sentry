@@ -150,15 +150,15 @@ Add DB log decorator for tracing db queries in `app/config/params.php`:
 
 ```php
 'yiisoft/yii-cycle' => [
-        // DBAL config
-        'dbal' => [
-            // SQL query logger. Definition of Psr\Log\LoggerInterface
-            // For example, \Yiisoft\Yii\Cycle\Logger\StdoutQueryLogger::class
-            'query-logger' => \Yiisoft\Yii\Sentry\DbLoggerDecorator::class,
-            /**
-            * ...
-            * your another db settings 
-            **/
+    // DBAL config
+    'dbal' => [
+        // SQL query logger. Definition of Psr\Log\LoggerInterface
+        // For example, \Yiisoft\Yii\Cycle\Logger\StdoutQueryLogger::class
+        'query-logger' => \Yiisoft\Yii\Sentry\DbLoggerDecorator::class,
+        /**
+         * ...
+         * your another db settings 
+         **/
     ]
 ]
 ```
