@@ -147,7 +147,8 @@ return [
 > Note: **If you want to see your logs in sentry timeline**, you need to use keys (float)'**time**' and (float)'**elapsed**' in log context array.
 _____
 
-add DB log decorator for tracing db queries in app/config/params.php
+Add DB log decorator for tracing db queries in `app/config/params.php`:
+
 ```php
 'yiisoft/yii-cycle' => [
         // DBAL config
