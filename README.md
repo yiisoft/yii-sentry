@@ -101,9 +101,7 @@ GuzzleHttp\Client::class => static function (ContainerInterface $container) {
 
 **Configure:**
 
-add code block below to your params.php
-and type your DSN
-also you can define your environment and release, for example TAG from gitlab.ci
+Add the following code block to your `params.php` and define DSN. Also you can set "environment" and "release". Good example is to use TAG from gitlab.ci for it.
 ```php 
     'yiisoft/yii-sentry' =>
         [
