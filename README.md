@@ -219,7 +219,7 @@ for example:
             ->setName('my_heavy_operation done, terminating application');
     /** transaction will commit when application is terminated */
 ```
-for this example all new transactions will linked to transaction with $sentryTraceString
+In this example all new transactions will linked to transaction with `$sentryTraceString`.
 
 
 In `options` you can also pass additional Sentry configuration. See 
