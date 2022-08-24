@@ -82,20 +82,20 @@ return [
 If you want to trace Guzzle requests and add Sentry headers to external queries, add the following:
 
 ```php 
-    GuzzleHttp\Client::class => static function (ContainerInterface $container) {
-        $stack = new HandlerStack();
-        $stack->setHandler(new CurlHandler());
-        $factory = $container->get(GuzzleMiddlewareFactory::class);
-        $middleware = static function (callable $handler) use ($factory): callable {
-            return $factory->factory($handler);
-        };
+GuzzleHttp\Client::class => static function (ContainerInterface $container) {
+    $stack = new HandlerStack();
+    $stack->setHandler(new CurlHandler());
+    $factory = $container->get(GuzzleMiddlewareFactory::class);
+    $middleware = static function (callable $handler) use ($factory): callable {
+        return $factory->factory($handler);
+    };
 
-        $stack->push($middleware);
+    $stack->push($middleware);
 
-        return new GuzzleHttp\Client([
-            'handler' => $stack,
-        ]);
-    },
+    return new GuzzleHttp\Client([
+        'handler' => $stack,
+    ]);
+},
 ```
 
 
