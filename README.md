@@ -172,7 +172,7 @@ add into app/config/params.php into middleware section  SetRequestIpMiddleware
     ],
 ```
 
-add into app/config/common/router.php tracing middleware
+Add `SentryTraceMiddleware` to `app/config/common/router.php`:
 ```php
   RouteCollectionInterface::class => static function (RouteCollectorInterface $collector) use ($config) {
         $collector
