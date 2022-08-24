@@ -191,13 +191,7 @@ Add `SentryTraceMiddleware` to `app/config/common/router.php`:
 
 
 
-
-
-if your transaction too heavy you can slice it to several transactions with clearing log buffer.
-
-use SentryConsoleTransactionAdapter or SentryWebTransactionAdapter
-
-for example:
+If your transaction is too heavy, you can slice it to several transactions with clearing log buffer. Use `SentryConsoleTransactionAdapter` or `SentryWebTransactionAdapter`. For example:
 
 ```php
 /** some code with default transaction */
