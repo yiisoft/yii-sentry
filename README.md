@@ -163,7 +163,7 @@ Add DB log decorator for tracing db queries in `app/config/params.php`:
 ]
 ```
 
-add into app/config/params.php into middleware section  SetRequestIpMiddleware
+Add `SetRequestIpMiddleware` to `app/config/params.php`, "middleware" section:
 ```php
     'middlewares' => [
         ErrorCatcher::class,
