@@ -121,7 +121,8 @@ Add the following code block to your `params.php` and define DSN. Also you can s
 ]
 ```
 
-add APP_START_TIME const into index.php and yii.php
+Add `APP_START_TIME` constant into `index.php` and `yii.php`:
+
 ```php
 define('APP_START_TIME', microtime(true));
 ```
