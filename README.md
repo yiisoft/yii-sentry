@@ -189,7 +189,6 @@ Add `SentryTraceMiddleware` to `app/config/common/router.php`:
     },
  ```
 
-________
 
 
 
