@@ -204,20 +204,21 @@ use SentryConsoleTransactionAdapter or SentryWebTransactionAdapter
 for example:
 
 ```php
-        /** some code with default transaction */
-        /** commit default transaction and send data to sentry server */
-        $sentryTraceString = $this->sentryTransactionAdapter->commit();
-        while ($currentDate <= $endDate) {
-            $this->sentryTransactionAdapter->begin($sentryTraceString)
-                ->setName('my_heavy_operation/iteration')
-                ->setData(['date' => $currentDate->format('Y-m-d')]);
+/** some code with default transaction */
+/** commit default transaction and send data to sentry server */
+$sentryTraceString = $this->sentryTransactionAdapter->commit();
+while ($currentDate <= $endDate) {
+    $this->sentryTransactionAdapter->begin($sentryTraceString)
+        ->setName('my_heavy_operation/iteration')
+        ->setData(['date' => $currentDate->format('Y-m-d')]);
 
-            $this->process($currentDate, $sentryTraceString);
-            $this->sentryTransactionAdapter->commit();
-        }
-        $this->sentryTransactionAdapter->begin($sentryTraceString)
-            ->setName('my_heavy_operation done, terminating application');
-    /** transaction will commit when application is terminated */
+    $this->process($currentDate, $sentryTraceString);
+    $this->sentryTransactionAdapter->commit();
+}
+
+$this->sentryTransactionAdapter->begin($sentryTraceString)
+    ->setName('my_heavy_operation done, terminating application');
+/** transaction will commit when application is terminated */
 ```
 In this example all new transactions will linked to transaction with `$sentryTraceString`.
 
