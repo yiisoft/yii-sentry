@@ -103,23 +103,22 @@ GuzzleHttp\Client::class => static function (ContainerInterface $container) {
 
 Add the following code block to your `params.php` and define DSN. Also you can set "environment" and "release". Good example is to use TAG from gitlab.ci for it.
 ```php 
-    'yiisoft/yii-sentry' =>
-        [
-            'options' => [
-                'dsn' => '',
-                'environment' => 'local', //SENTRY_ENVIRONMENT, //YII_ENV,
-                'release' => 'dev',  //SENTRY_RELEASE, //TAG
-                // @see: https://docs.sentry.io/platforms/php/configuration/options/#send-default-pii
-                'send_default_pii' => true,
-                'traces_sample_rate' => 1.0,
-            ],
-            'handleConsoleErrors' => true,
-            'log_level' => 'warning',
-            'tracing'          => [
-                // Indicates if the tracing integrations supplied by Sentry should be loaded
-                'default_integrations'   => true,
-            ],
-        ]
+'yiisoft/yii-sentry' => [
+    'options' => [
+        'dsn' => '',
+        'environment' => 'local', //SENTRY_ENVIRONMENT, //YII_ENV,
+        'release' => 'dev',  //SENTRY_RELEASE, //TAG
+        // @see: https://docs.sentry.io/platforms/php/configuration/options/#send-default-pii
+        'send_default_pii' => true,
+        'traces_sample_rate' => 1.0,
+    ],
+    'handleConsoleErrors' => true,
+    'log_level' => 'warning',
+    'tracing' => [
+        // Indicates if the tracing integrations supplied by Sentry should be loaded
+        'default_integrations'   => true,
+    ],
+]
 ```
 
 add APP_START_TIME const into index.php and yii.php
