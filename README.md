@@ -79,7 +79,7 @@ return [
 ];
 ```
 
-if you want to trace guzzle requests and add sentry headers to external queries, add this
+If you want to trace Guzzle requests and add Sentry headers to external queries, add the following:
 
 ```php 
     GuzzleHttp\Client::class => static function (ContainerInterface $container) {
