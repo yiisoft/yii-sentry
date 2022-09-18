@@ -5,30 +5,59 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Sentry\Tests;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
-use Sentry\ClientBuilder;
+use Psr\Log\LoggerInterface;
 use Sentry\Options;
-use Sentry\SentrySdk;
 use Sentry\State\Hub;
 use Sentry\State\HubInterface;
+use Yiisoft\Di\CompositeContainer;
+use Yiisoft\Log\Logger;
+use Yiisoft\Yii\Sentry\HubBootstrapper;
+use Yiisoft\Yii\Sentry\SentryBreadcrumbLogTarget;
+use Yiisoft\Yii\Sentry\SentryLogAdapter;
 use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
 use Yiisoft\Yii\Sentry\Tests\Stub\TransportFactory;
+use Yiisoft\Yii\Sentry\Tracing\SentryTraceLogTarget;
+use Yiisoft\Yii\Sentry\YiiSentryConfig;
 
 abstract class TestCase extends BaseTestCase
 {
-    protected function createSentryHub(string $eventKey): HubInterface
+    protected ?LoggerInterface $logger = null;
+
+    protected function createSentryHub(string $eventKey, array $overrideParams = []): HubInterface
     {
-        $options = $this->getParams()['yiisoft/yii-sentry']['options'];
-        $clientBuilder = new ClientBuilder(new Options($options));
-        $clientBuilder->setTransportFactory(new TransportFactory($eventKey));
-
-        $client = $clientBuilder->getClient();
-
         $hub = new Hub();
-        $hub->bindClient($client);
+        $params = $this->getParams()['yiisoft/yii-sentry'];
+        $params = array_merge($params, [
+            'handleConsoleErrors' => true,
+            'log_level'           => 'warning',
+            'tracing'             => [
+                // Indicates if the tracing integrations supplied by Sentry should be loaded
+                'default_integrations' => true,
+            ],
+        ], $overrideParams);
+        $config = new YiiSentryConfig($params);
 
-        SentrySdk::setCurrentHub($hub);
+        $handler = new SentryLogAdapter($hub, $config);
+        $logTarget = new SentryBreadcrumbLogTarget($handler);
+        $traceTarget = new SentryTraceLogTarget();
+        $logger = new Logger([$logTarget, $traceTarget]);
+        $this->logger = $logger;
 
+        $bootstrapper = new HubBootstrapper(
+            options: new Options($config->getOptions()),
+            configuration: $config,
+            transportFactory: new TransportFactory($eventKey),
+            logger: $logger,
+            hub: $hub,
+            container: new CompositeContainer()
+        );
+        $bootstrapper->bootstrap();
         return $hub;
+    }
+
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger ?? throw new \Exception("need logger");
     }
 
     protected function assertTransportHasException(string $name, string $message, string $eventKey): void
