@@ -29,8 +29,8 @@ abstract class TestCase extends BaseTestCase
         $params = $this->getParams()['yiisoft/yii-sentry'];
         $params = array_merge($params, [
             'handleConsoleErrors' => true,
-            'log_level'           => 'warning',
-            'tracing'             => [
+            'log_level' => 'warning',
+            'tracing' => [
                 // Indicates if the tracing integrations supplied by Sentry should be loaded
                 'default_integrations' => true,
             ],
@@ -57,7 +57,7 @@ abstract class TestCase extends BaseTestCase
 
     public function getLogger(): LoggerInterface
     {
-        return $this->logger ?? throw new \Exception("need logger");
+        return $this->logger ?? throw new \Exception('need logger');
     }
 
     protected function assertTransportHasException(string $name, string $message, string $eventKey): void
