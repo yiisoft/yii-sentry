@@ -137,8 +137,8 @@ final class ConfigTest extends TestCase
                     ],
                 ],
                 [
-                    'Symfony\Component\Console\Event\ConsoleErrorEvent' => [
-                        ['Yiisoft\Yii\Sentry\SentryConsoleHandler', 'handle'],
+                    \Symfony\Component\Console\Event\ConsoleErrorEvent::class => [
+                        [\Yiisoft\Yii\Sentry\SentryConsoleHandler::class, 'handle'],
                     ],
                 ],
             ],
