@@ -32,7 +32,7 @@ final class SentryMiddlewareTest extends TestCase
                 $this->createRequestHandlerWithException(),
             );
         } catch (RuntimeException $e) {
-            $this->assertTransportHasException('RuntimeException', 'Exception test.', $eventKey);
+            $this->assertTransportHasException(\RuntimeException::class, 'Exception test.', $eventKey);
 
             throw $e;
         }
@@ -53,7 +53,7 @@ final class SentryMiddlewareTest extends TestCase
                 $this->createRequestHandlerWithFatalError(),
             );
         } catch (Error $e) {
-            $this->assertTransportHasException('PHPUnit\Framework\Error\Error', 'Fatal error test.', $eventKey);
+            $this->assertTransportHasException(\PHPUnit\Framework\Error\Error::class, 'Fatal error test.', $eventKey);
 
             throw $e;
         }
