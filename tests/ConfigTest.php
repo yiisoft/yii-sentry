@@ -24,9 +24,11 @@ use Sentry\Client;
 use Sentry\SentrySdk;
 use Sentry\Transport\HttpTransport;
 use Sentry\Transport\NullTransport;
+use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Yiisoft\Definitions\Reference;
 use Yiisoft\Di\Container;
 use Yiisoft\Di\ContainerConfig;
+use Yiisoft\Yii\Sentry\SentryConsoleHandler;
 
 final class ConfigTest extends TestCase
 {
@@ -137,8 +139,8 @@ final class ConfigTest extends TestCase
                     ],
                 ],
                 [
-                    \Symfony\Component\Console\Event\ConsoleErrorEvent::class => [
-                        [\Yiisoft\Yii\Sentry\SentryConsoleHandler::class, 'handle'],
+                    ConsoleErrorEvent::class => [
+                        [SentryConsoleHandler::class, 'handle'],
                     ],
                 ],
             ],
