@@ -64,8 +64,6 @@ final class Integration implements IntegrationInterface
 
     /**
      * Extract the readable name for a route.
-     *
-     *
      */
     public static function extractNameForRoute(?CurrentRoute $route): ?string
     {
@@ -101,7 +99,6 @@ final class Integration implements IntegrationInterface
 
     /**
      * Get the current active tracing span from the scope.
-     *
      *
      * @internal This is used internally as an easy way to retrieve the current active tracing span.
      */

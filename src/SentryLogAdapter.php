@@ -175,8 +175,6 @@ final class SentryLogAdapter
 
     /**
      * Translates Monolog log levels to Sentry Severity.
-     *
-     *
      */
     protected function getLogLevel(string $logLevel): Severity
     {
@@ -246,8 +244,6 @@ final class SentryLogAdapter
 
     /**
      * Set the current application environment.
-     *
-     *
      */
     public function setEnvironment(?string $value): self
     {
