@@ -34,8 +34,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -80,3 +78,10 @@ jobs:
       - name: Push changes
         if: steps.rector-git-check.outputs.modified == 'true'
         run: git push
+
+      - name: Create issue using REST API
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/rerun \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --fail
