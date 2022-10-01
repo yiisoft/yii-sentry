@@ -116,11 +116,6 @@ class GuzzleMiddlewareFactory
         };
     }
 
-    /**
-     * @param ResponseInterface|null $response
-     *
-     * @return string
-     */
     protected function getResponseContentBody(?ResponseInterface $response): string
     {
         if ($response?->getBody()?->isReadable()) {

@@ -84,8 +84,8 @@ final class HubBootstrapper
                     }
 
                     // We also remove the default request integration so it can be readded
-                    // after with a Laravel specific request fetcher. This way we can resolve
-                    // the request from Laravel instead of constructing it from the global state
+                    // after with a Yii3 specific request fetcher. This way we can resolve
+                    // the request from Yii3 instead of constructing it from the global state
                     return ! ($integration instanceof
                         SdkIntegration\RequestIntegration);
                 }
@@ -148,7 +148,7 @@ final class HubBootstrapper
                     if (is_array($resolvedIntegration)) {
                         $value = 'array';
                     } elseif (is_object($resolvedIntegration)) {
-                        $value = get_class($resolvedIntegration);
+                        $value = $resolvedIntegration::class;
                     } elseif (null === $resolvedIntegration) {
                         $value = 'null';
                     } else {

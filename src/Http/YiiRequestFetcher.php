@@ -13,16 +13,9 @@ use const PHP_SAPI;
 
 class YiiRequestFetcher implements RequestFetcherInterface
 {
-    /**
-     * The Laravel container.
-     *
-     * @var ContainerInterface
-     */
-    private ContainerInterface $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        private ContainerInterface $container
+    ) {
     }
 
     /** @psalm-suppress  MixedInferredReturnType */

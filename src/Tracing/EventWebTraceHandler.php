@@ -57,7 +57,7 @@ final class EventWebTraceHandler
     private function handleStart(MiddlewareInterface $middleware): void
     {
         $currentTime = microtime(true);
-        $currentClass = get_class($middleware);
+        $currentClass = $middleware::class;
 
         if (null === $this->prevTime || null === $this->prevClass) {
             $this->prevTime = $currentTime;
@@ -92,7 +92,7 @@ final class EventWebTraceHandler
     private function handleDone(MiddlewareInterface $middleware): void
     {
         $currentTime = microtime(true);
-        $currentClass = get_class($middleware);
+        $currentClass = $middleware::class;
         if (null === $this->prevTime) {
             return;
         }

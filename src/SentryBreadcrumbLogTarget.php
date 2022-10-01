@@ -8,12 +8,9 @@ use Yiisoft\Log\Target;
 
 final class SentryBreadcrumbLogTarget extends Target
 {
-    private SentryLogAdapter $handler;
-
-    public function __construct(SentryLogAdapter $handler)
+    public function __construct(private SentryLogAdapter $handler)
     {
         parent::__construct();
-        $this->handler = $handler;
     }
 
     /**

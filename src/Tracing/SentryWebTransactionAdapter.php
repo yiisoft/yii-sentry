@@ -14,14 +14,11 @@ class SentryWebTransactionAdapter
 {
     protected ?Logger $logger = null;
 
-    private SentryTraceMiddleware $middleware;
-
-    public function __construct(LoggerInterface $logger, SentryTraceMiddleware $middleware)
+    public function __construct(LoggerInterface $logger, private SentryTraceMiddleware $middleware)
     {
         if ($logger instanceof Logger) {
             $this->logger = $logger;
         }
-        $this->middleware = $middleware;
     }
 
     public function begin(?string $sentryTraceString = null): self

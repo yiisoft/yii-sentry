@@ -19,14 +19,8 @@ use Sentry\State\Scope;
  */
 class SetRequestIpMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private ContainerInterface $container)
     {
-        $this->container = $container;
     }
 
     public function process(

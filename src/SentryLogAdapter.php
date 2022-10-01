@@ -20,7 +20,7 @@ final class SentryLogAdapter
      *
      * @var string|null the current application environment (staging|preprod|prod)
      */
-    protected ?string $environment;
+    protected ?string $environment = null;
 
     /**
      * @psalm-suppress PropertyNotSetInConstructor
@@ -28,7 +28,7 @@ final class SentryLogAdapter
      * @var string|null should represent the current version of the calling
      *             software. Can be any string (git commit, version number)
      */
-    protected ?string $release;
+    protected ?string $release = null;
 
     protected string $minLevel;
 
@@ -144,8 +144,6 @@ final class SentryLogAdapter
     }
 
     /**
-     * @param array $fingerprint
-     *
      * @return string[]
      */
     private function formatFingerPrint(array $fingerprint): array
@@ -162,8 +160,6 @@ final class SentryLogAdapter
     }
 
     /**
-     * @param array $user
-     *
      * @return array<string, mixed>
      */
     private function formatUser(array $user): array
@@ -180,9 +176,7 @@ final class SentryLogAdapter
     /**
      * Translates Monolog log levels to Sentry Severity.
      *
-     * @param string $logLevel
      *
-     * @return Severity
      */
     protected function getLogLevel(string $logLevel): Severity
     {
@@ -242,8 +236,6 @@ final class SentryLogAdapter
      * Set the release.
      *
      * @param string $value
-     *
-     * @return self
      */
     public function setRelease($value): self
     {
@@ -255,9 +247,7 @@ final class SentryLogAdapter
     /**
      * Set the current application environment.
      *
-     * @param string|null $value
      *
-     * @return self
      */
     public function setEnvironment(?string $value): self
     {

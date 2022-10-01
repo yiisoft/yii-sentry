@@ -14,8 +14,6 @@ final class YiiSentryConfig
 
     /**
      * Check if a DSN was set in the config.
-     *
-     * @return bool
      */
     public function hasDsnSet(): bool
     {
@@ -26,8 +24,6 @@ final class YiiSentryConfig
 
     /**
      * Retrieve the user configuration.
-     *
-     * @return array
      */
     public function getUserConfig(): array
     {
@@ -59,9 +55,6 @@ final class YiiSentryConfig
         return isset($this->config['log_level']) ? (string)$this->config['log_level'] : null;
     }
 
-    /**
-     * @return array
-     */
     public function getIntegrations(): array
     {
         return empty($this->config['integrations'])
@@ -75,8 +68,6 @@ final class YiiSentryConfig
      * Checks if the config is set in such a way that performance tracing could be enabled.
      *
      * Because of `traces_sampler` being dynamic we can never be 100% confident but that is also not important.
-     *
-     * @return bool
      */
     public function couldHavePerformanceTracingEnabled(): bool
     {

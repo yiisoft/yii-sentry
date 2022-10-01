@@ -15,14 +15,11 @@ final class SentryConsoleTransactionAdapter
 {
     protected ?Logger $logger = null;
 
-    private SentryTraceConsoleListener $consoleListener;
-
-    public function __construct(LoggerInterface $logger, SentryTraceConsoleListener $consoleListener)
+    public function __construct(LoggerInterface $logger, private SentryTraceConsoleListener $consoleListener)
     {
         if ($logger instanceof Logger) {
             $this->logger = $logger;
         }
-        $this->consoleListener = $consoleListener;
     }
 
     public function begin(?string $sentryTraceString = null): self

@@ -17,15 +17,10 @@ use function Sentry\configureScope;
 
 final class Integration implements IntegrationInterface
 {
-    /**
-     * @var string|null
-     */
-    private static $transaction;
+    private static ?string $transaction = null;
 
     /**
-     * Adds a breadcrumb if the integration is enabled for Laravel.
-     *
-     * @param Breadcrumb $breadcrumb
+     * Adds a breadcrumb if the integration is enabled for Yii3.
      */
     public static function addBreadcrumb(Breadcrumb $breadcrumb): void
     {
@@ -39,9 +34,7 @@ final class Integration implements IntegrationInterface
     }
 
     /**
-     * Configures the scope if the integration is enabled for Laravel.
-     *
-     * @param callable $callback
+     * Configures the scope if the integration is enabled for Yii3.
      */
     public static function configureScope(callable $callback): void
     {
@@ -72,9 +65,7 @@ final class Integration implements IntegrationInterface
     /**
      * Extract the readable name for a route.
      *
-     * @param CurrentRoute|null $route
      *
-     * @return string|null
      */
     public static function extractNameForRoute(?CurrentRoute $route): ?string
     {
@@ -96,8 +87,6 @@ final class Integration implements IntegrationInterface
 
     /**
      * Retrieve the meta tags with tracing information to link this request to front-end requests.
-     *
-     * @return string
      */
     public static function sentryTracingMeta(): string
     {
@@ -113,7 +102,6 @@ final class Integration implements IntegrationInterface
     /**
      * Get the current active tracing span from the scope.
      *
-     * @return Span|null
      *
      * @internal This is used internally as an easy way to retrieve the current active tracing span.
      */
@@ -162,17 +150,11 @@ final class Integration implements IntegrationInterface
         });
     }
 
-    /**
-     * @return string|null
-     */
     public static function getTransaction(): ?string
     {
         return self::$transaction;
     }
 
-    /**
-     * @param string|null $transaction
-     */
     public static function setTransaction(?string $transaction): void
     {
         self::$transaction = $transaction;

@@ -23,18 +23,14 @@ final class SentryTraceMiddleware implements MiddlewareInterface
      * The current active transaction.
      *
      * @psalm-suppress PropertyNotSetInConstructor
-     *
-     * @var Transaction|null
      */
-    protected $transaction;
+    protected ?\Sentry\Tracing\Transaction $transaction = null;
     /**
      * The span for the `app.handle` part of the application.
      *
      * @psalm-suppress PropertyNotSetInConstructor
-     *
-     * @var Span|null
      */
-    protected $appSpan;
+    protected ?\Sentry\Tracing\Span $appSpan = null;
     /**
      * The timestamp of application bootstrap completion.
      *
@@ -44,34 +40,24 @@ final class SentryTraceMiddleware implements MiddlewareInterface
     /**
      * @psalm-suppress PropertyNotSetInConstructor
      */
-    private ?ServerRequestInterface $request;
+    private ?ServerRequestInterface $request = null;
     /**
      * @psalm-suppress PropertyNotSetInConstructor
      */
-    private ?ResponseInterface $response;
+    private ?ResponseInterface $response = null;
 
     public function __construct(
         private HubInterface $hub,
         private ?CurrentRoute $currentRoute
     ) {
-        $this->request = null;
-        $this->response = null;
         $this->bootedTimestamp = microtime(true);
     }
 
-    /**
-     * @return Transaction|null
-     */
     public function getTransaction(): ?Transaction
     {
         return $this->transaction;
     }
 
-    /**
-     * @param Transaction|null $transaction
-     *
-     * @return self
-     */
     public function setTransaction(?Transaction $transaction): self
     {
         $this->transaction = $transaction;
@@ -259,17 +245,11 @@ final class SentryTraceMiddleware implements MiddlewareInterface
         $this->transaction?->setHttpStatus($response->getStatusCode());
     }
 
-    /**
-     * @return Span|null
-     */
     public function getAppSpan(): ?Span
     {
         return $this->appSpan;
     }
 
-    /**
-     * @param Span|null $appSpan
-     */
     public function setAppSpan(?Span $appSpan): void
     {
         $this->appSpan = $appSpan;

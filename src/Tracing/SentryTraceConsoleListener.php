@@ -25,7 +25,7 @@ final class SentryTraceConsoleListener
      *
      * @var Transaction|null
      */
-    protected ?Transaction $transaction;
+    protected ?Transaction $transaction = null;
     /**
      * The span for the `app.handle` part of the application.
      *
@@ -33,7 +33,7 @@ final class SentryTraceConsoleListener
      *
      * @var Span|null
      */
-    protected ?Span $appSpan;
+    protected ?Span $appSpan = null;
     /**
      * The span for the `app.handle` part of the application.
      *
@@ -41,7 +41,7 @@ final class SentryTraceConsoleListener
      *
      * @var Span|null
      */
-    protected ?Span $bootSpan;
+    protected ?Span $bootSpan = null;
     /**
      * The timestamp of application bootstrap completion.
      *
@@ -55,19 +55,11 @@ final class SentryTraceConsoleListener
         $this->bootedTimestamp = microtime(true);
     }
 
-    /**
-     * @return Transaction|null
-     */
     public function getTransaction(): ?Transaction
     {
         return $this->transaction;
     }
 
-    /**
-     * @param Transaction|null $transaction
-     *
-     * @return self
-     */
     public function setTransaction(?Transaction $transaction): self
     {
         $this->transaction = $transaction;
@@ -215,17 +207,11 @@ final class SentryTraceConsoleListener
         $this->appSpan?->finish(microtime(true));
     }
 
-    /**
-     * @return Span|null
-     */
     public function getAppSpan(): ?Span
     {
         return $this->appSpan;
     }
 
-    /**
-     * @param Span|null $appSpan
-     */
     public function setAppSpan(?Span $appSpan): void
     {
         $this->appSpan = $appSpan;
