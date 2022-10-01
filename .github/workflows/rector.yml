@@ -34,7 +34,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        persist-credentials: false
+        with:
+          persist-credentials: false
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
