@@ -129,7 +129,7 @@ define('APP_START_TIME', microtime(true));
 
 Add log targets for breadcrumbs and tracing to `app/config/common/logger.php` or another config file with logger settings:
 
-```php 
+```php
 return [
     LoggerInterface::class => static function (
         /** your_another_log_target $your_log_target */
