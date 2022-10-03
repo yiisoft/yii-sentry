@@ -94,7 +94,6 @@ final class HubBootstrapper
         // Default Sentry SDK integrations
         $integrations = [
             new Integration(),
-            //new ExceptionContextIntegration(),
         ];
 
         $integrationsToResolve = $this->configuration->getIntegrations();
