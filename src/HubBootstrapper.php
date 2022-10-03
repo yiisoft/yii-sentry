@@ -65,7 +65,7 @@ final class HubBootstrapper
 
         $integrations = array_filter(
             $integrations,
-            static fn(SdkIntegration\IntegrationInterface $integration): bool => !(
+            static fn (SdkIntegration\IntegrationInterface $integration): bool => !(
                 $integration instanceof SdkIntegration\ErrorListenerIntegration ||
                 $integration instanceof SdkIntegration\ExceptionListenerIntegration ||
                 $integration instanceof SdkIntegration\FatalErrorListenerIntegration ||
