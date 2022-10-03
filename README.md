@@ -108,7 +108,7 @@ Add the following code block to your `params.php` and define DSN. Also you can s
         'dsn' => '',
         'environment' => 'local', //SENTRY_ENVIRONMENT, //YII_ENV,
         'release' => 'dev',  //SENTRY_RELEASE, //TAG
-        // @see: https://docs.sentry.io/platforms/php/configuration/options/#send-default-pii
+        // https://docs.sentry.io/platforms/php/configuration/options/#send-default-pii
         'send_default_pii' => true,
         'traces_sample_rate' => 1.0,
     ],
