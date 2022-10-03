@@ -22,10 +22,8 @@ class SetRequestIpMiddleware implements MiddlewareInterface
     {
     }
 
-    public function process(
-        ServerRequestInterface $request,
-        RequestHandlerInterface $handler
-    ): ResponseInterface {
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface 
+    {
         if ($this->container->has(HubInterface::class)) {
             /** @var HubInterface $sentry */
             $sentry = $this->container->get(HubInterface::class);
