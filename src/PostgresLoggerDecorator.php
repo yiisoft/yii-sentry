@@ -7,7 +7,7 @@ namespace Yiisoft\Yii\Sentry;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 
-final class DbLoggerDecorator implements LoggerInterface
+final class PostgresLoggerDecorator implements LoggerInterface
 {
     use LoggerTrait;
 

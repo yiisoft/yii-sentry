@@ -147,6 +147,7 @@ return [
 > Note: **If you want to see your logs in sentry timeline**, you need to use keys (float)'**time**' and (float)'**elapsed**' in log context array.
 
 Add DB log decorator for tracing db queries in `app/config/params.php`:
+(now it is available only for postgres, it will work with another db, but can't separate system queries from user queries correctly)
 
 ```php
 'yiisoft/yii-cycle' => [
@@ -154,7 +155,7 @@ Add DB log decorator for tracing db queries in `app/config/params.php`:
     'dbal' => [
         // SQL query logger. Definition of Psr\Log\LoggerInterface
         // For example, \Yiisoft\Yii\Cycle\Logger\StdoutQueryLogger::class
-        'query-logger' => \Yiisoft\Yii\Sentry\DbLoggerDecorator::class,
+        'query-logger' => \Yiisoft\Yii\Sentry\PostgresLoggerDecorator::class,
         /**
          * ...
          * your another db settings 
