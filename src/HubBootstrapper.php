@@ -52,7 +52,7 @@ final class HubBootstrapper
      *
      * @return IntegrationInterface[]
      */
-    public function prepareIntegrations(array $integrations)
+    public function prepareIntegrations(array $integrations): void
     {
         $userIntegrations = $this->resolveIntegrationsFromUserConfig();
         if ($this->options->hasDefaultIntegrations()) {
