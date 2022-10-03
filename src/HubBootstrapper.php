@@ -163,7 +163,7 @@ final class HubBootstrapper
             } else {
                 throw new RuntimeException(
                     sprintf(
-                        'Sentry integrations must either be a valid container reference or an instance of `%s`.',
+                        'Sentry integration must either be a valid container reference or an instance of `%s`.',
                         SdkIntegration\IntegrationInterface::class
                     )
                 );
