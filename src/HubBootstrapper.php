@@ -114,12 +114,8 @@ final class HubBootstrapper
 
         $integrationsToResolve = $this->configuration->getIntegrations();
 
-        $enableDefaultTracingIntegrations = isset(
-            $this->configuration
-                ->getTracing()['default_integrations']
-        )
-            ? (bool)$this->configuration->getTracing()['default_integrations']
-            : true;
+        $enableDefaultTracingIntegrations = !isset($this->configuration->getTracing()['default_integrations']) ||
+            (bool)$this->configuration->getTracing()['default_integrations'];
 
         if (
             $enableDefaultTracingIntegrations
