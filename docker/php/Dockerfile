@@ -7,4 +7,3 @@ COPY ./ /app
 RUN composer install
 ENTRYPOINT []
 
-
