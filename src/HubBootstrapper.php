@@ -43,9 +43,8 @@ final class HubBootstrapper
 
         $client = $clientBuilder->getClient();
 
-        $hub = $this->hub;
-        $hub->bindClient($client);
-        SentrySdk::setCurrentHub($hub);
+        $this->hub->bindClient($client);
+        SentrySdk::setCurrentHub($this->hub);
     }
 
     /**
