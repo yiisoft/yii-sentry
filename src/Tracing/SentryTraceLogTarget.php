@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Sentry\Tracing;
 
-use Yiisoft\Yii\Sentry\Integration;
 use Sentry\Tracing\SpanContext;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target;
+use Yiisoft\Yii\Sentry\Integration\Integration;
 
 final class SentryTraceLogTarget extends Target
 {

@@ -34,20 +34,22 @@ final class YiiSentryConfig
 
     public function getOptions(): array
     {
-        return empty($this->config['options'])
-            ? []
-            : (is_array($this->config['options'])
+        if (empty($this->config['options'])) {
+            return [];
+        }
+        return is_array($this->config['options'])
                 ? $this->config['options']
-                : throw  new InvalidArgumentException('options must be an array'));
+                : throw  new InvalidArgumentException('options must be an array');
     }
 
     public function getTracing(): array
     {
-        return empty($this->config['tracing'])
-            ? []
-            : (is_array($this->config['tracing'])
+        if (empty($this->config['tracing'])) {
+            return [];
+        }
+        return is_array($this->config['tracing'])
                 ? $this->config['tracing']
-                : throw  new InvalidArgumentException('tracing must be an array'));
+                : throw  new InvalidArgumentException('tracing must be an array');
     }
 
     public function getLogLevel(): ?string
@@ -57,11 +59,12 @@ final class YiiSentryConfig
 
     public function getIntegrations(): array
     {
-        return empty($this->config['integrations'])
-            ? []
-            : (is_array($this->config['integrations'])
+        if (empty($this->config['integrations'])) {
+            return [];
+        }
+        return is_array($this->config['integrations'])
                 ? $this->config['integrations']
-                : throw  new InvalidArgumentException('integrations must be an array'));
+                : throw  new InvalidArgumentException('integrations must be an array');
     }
 
     /**

@@ -19,6 +19,7 @@
     },
     "require": {
         "php": "^8.0",
+        "ext-mbstring": "*",
         "psr/http-message": "^1.0",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
@@ -28,7 +29,6 @@
         "yiisoft/di": "^1.0",
         "yiisoft/log": "^2.0",
         "yiisoft/router": "^1.1",
-        "yiisoft/router-fastroute": "^1.1",
         "yiisoft/yii-http": "^1.0"
     },
     "require-dev": {
@@ -43,11 +43,13 @@
         "vimeo/psalm": "^4.18",
         "yiisoft/error-handler": "^2.1",
         "yiisoft/yii-console": "^1.0",
-        "yiisoft/yii-event": "^1.0"
+        "yiisoft/yii-event": "^1.0",
+        "yiisoft/dummy-provider": "^1.0"
     },
     "suggest": {
         "yiisoft/yii-console": "Add error catching to console application",
-        "yiisoft/yii-event": "Add error catching to console application"
+        "yiisoft/yii-event": "Add error catching to console application",
+        "yiisoft/router-fastroute": "Router implementation based on nikic/FastRoute"
     },
     "autoload": {
         "psr-4": {

@@ -12,6 +12,7 @@ use Sentry\Severity;
 use Sentry\State\HubInterface;
 use Sentry\State\Scope;
 use Throwable;
+use Yiisoft\Yii\Sentry\Integration\Integration;
 
 final class SentryLogAdapter
 {

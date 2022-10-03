@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Sentry\Tracing;
 
-use Yiisoft\Yii\Sentry\Integration;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -16,6 +15,7 @@ use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\Transaction;
 use Sentry\Tracing\TransactionContext;
 use Yiisoft\Router\CurrentRoute;
+use Yiisoft\Yii\Sentry\Integration\Integration;
 
 final class SentryTraceMiddleware implements MiddlewareInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Yii\Sentry;
+namespace Yiisoft\Yii\Sentry\Integration;
 
 use Sentry\Breadcrumb;
 use Sentry\Event;

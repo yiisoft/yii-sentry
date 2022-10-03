@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Sentry\Tracing;
 
-use Yiisoft\Yii\Sentry\Integration;
 use Psr\Http\Server\MiddlewareInterface;
 use Sentry\Tracing\SpanContext;
 use Yiisoft\Middleware\Dispatcher\Event\AfterMiddleware;
 use Yiisoft\Middleware\Dispatcher\Event\BeforeMiddleware;
 use Yiisoft\Yii\Http\Event\ApplicationShutdown;
+use Yiisoft\Yii\Sentry\Integration\Integration;
 
 final class EventWebTraceHandler
 {

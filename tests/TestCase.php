@@ -9,7 +9,8 @@ use Psr\Log\LoggerInterface;
 use Sentry\Options;
 use Sentry\State\Hub;
 use Sentry\State\HubInterface;
-use Yiisoft\Di\CompositeContainer;
+use Yiisoft\Di\Container;
+use Yiisoft\Di\ContainerConfig;
 use Yiisoft\Log\Logger;
 use Yiisoft\Yii\Sentry\HubBootstrapper;
 use Yiisoft\Yii\Sentry\SentryBreadcrumbLogTarget;
@@ -42,6 +43,12 @@ abstract class TestCase extends BaseTestCase
         $traceTarget = new SentryTraceLogTarget();
         $logger = new Logger([$logTarget, $traceTarget]);
         $this->logger = $logger;
+        $containerConfig = ContainerConfig::create();
+        $containerConfig = $containerConfig->withDefinitions([
+            LoggerInterface::class => $logger,
+            HubInterface::class => $hub,
+        ]);
+        $container = new Container($containerConfig);
 
         $bootstrapper = new HubBootstrapper(
             options: new Options($config->getOptions()),
@@ -49,7 +56,7 @@ abstract class TestCase extends BaseTestCase
             transportFactory: new TransportFactory($eventKey),
             logger: $logger,
             hub: $hub,
-            container: new CompositeContainer()
+            container: $container,
         );
         $bootstrapper->bootstrap();
         return $hub;
