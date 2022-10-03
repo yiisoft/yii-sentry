@@ -65,17 +65,15 @@ final class HubBootstrapper
 
         $integrations = array_filter(
             $integrations,
-            static function (SdkIntegration\IntegrationInterface $integration): bool {
-                return !(
-                    $integration instanceof SdkIntegration\ErrorListenerIntegration ||
-                    $integration instanceof SdkIntegration\ExceptionListenerIntegration ||
-                    $integration instanceof SdkIntegration\FatalErrorListenerIntegration ||
-                    // We also remove the default request integration so it can be readded after with a Yii3
-                    // specific request fetcher. This way we can resolve the request from Yii3 instead of
-                    // constructing it from the global state.
-                    $integration instanceof SdkIntegration\RequestIntegration
-                );
-            }
+            static fn(SdkIntegration\IntegrationInterface $integration): bool => !(
+                $integration instanceof SdkIntegration\ErrorListenerIntegration ||
+                $integration instanceof SdkIntegration\ExceptionListenerIntegration ||
+                $integration instanceof SdkIntegration\FatalErrorListenerIntegration ||
+                // We also remove the default request integration so it can be readded after with a Yii3
+                // specific request fetcher. This way we can resolve the request from Yii3 instead of
+                // constructing it from the global state.
+                $integration instanceof SdkIntegration\RequestIntegration
+            )
         );
         $integrations[] = new SdkIntegration\RequestIntegration(
             new YiiRequestFetcher($this->container)
