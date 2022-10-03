@@ -152,7 +152,7 @@ final class HubBootstrapper
 
                     throw new RuntimeException(
                         sprintf(
-                            'Sentry integrations must be an instance of `%s` got `%s`.',
+                            'Sentry integration must be an instance of `%s` got `%s`.',
                             SdkIntegration\IntegrationInterface::class,
                             $value
                         )
