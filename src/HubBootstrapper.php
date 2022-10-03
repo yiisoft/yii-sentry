@@ -62,31 +62,16 @@ final class HubBootstrapper
                     SdkIntegration\IntegrationInterface $integration
                 ): bool {
                     if (
-                        $integration instanceof
-                        SdkIntegration\ErrorListenerIntegration
+                        $integration instanceof SdkIntegration\ErrorListenerIntegration ||
+                        $integration instanceof SdkIntegration\ExceptionListenerIntegration ||
+                        $integration instanceof SdkIntegration\FatalErrorListenerIntegration ||
+                        // We also remove the default request integration so it can be readded after with a Yii3
+                        // specific request fetcher. This way we can resolve the request from Yii3 instead of
+                        // constructing it from the global state.
+                        $integration instanceof SdkIntegration\RequestIntegration
                     ) {
                         return false;
                     }
-
-                    if (
-                        $integration instanceof
-                        SdkIntegration\ExceptionListenerIntegration
-                    ) {
-                        return false;
-                    }
-
-                    if (
-                        $integration instanceof
-                        SdkIntegration\FatalErrorListenerIntegration
-                    ) {
-                        return false;
-                    }
-
-                    // We also remove the default request integration so it can be readded
-                    // after with a Yii3 specific request fetcher. This way we can resolve
-                    // the request from Yii3 instead of constructing it from the global state
-                    return ! ($integration instanceof
-                        SdkIntegration\RequestIntegration);
                 }
             );
 
