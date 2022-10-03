@@ -23,7 +23,7 @@ use function is_string;
 final class HubBootstrapper
 {
     public const DEFAULT_INTEGRATIONS = [
-        ExceptionContextIntegration::class
+        ExceptionContextIntegration::class,
     ];
 
     public function __construct(
