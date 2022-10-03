@@ -125,21 +125,11 @@ final class HubBootstrapper
                     !$resolvedIntegration instanceof
                         SdkIntegration\IntegrationInterface
                 ) {
-                    if (is_array($resolvedIntegration)) {
-                        $value = 'array';
-                    } elseif (is_object($resolvedIntegration)) {
-                        $value = $resolvedIntegration::class;
-                    } elseif (null === $resolvedIntegration) {
-                        $value = 'null';
-                    } else {
-                        $value = (string)$resolvedIntegration;
-                    }
-
                     throw new RuntimeException(
                         sprintf(
                             'Sentry integration must be an instance of `%s` got `%s`.',
                             SdkIntegration\IntegrationInterface::class,
-                            $value
+                            get_debug_type($resolvedIntegration)
                         )
                     );
                 }
