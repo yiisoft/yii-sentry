@@ -24,7 +24,7 @@ final class SentryConsoleTransactionAdapter
         } else {
             $context = new TransactionContext();
         }
-        $context->setOp('console sub task');
+        $context->setOp('console subtask');
 
         $context->setStartTimestamp(microtime(true));
 
