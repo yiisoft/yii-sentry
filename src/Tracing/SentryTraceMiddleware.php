@@ -33,8 +33,6 @@ final class SentryTraceMiddleware implements MiddlewareInterface
     protected ?\Sentry\Tracing\Span $appSpan = null;
     /**
      * The timestamp of application bootstrap completion.
-     *
-     * @var float|null
      */
     private ?float $bootedTimestamp;
     /**
@@ -80,11 +78,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         HubInterface $sentry
     ): void {
-        $requestStartTime = !empty($request->getServerParams()['REQUEST_TIME_FLOAT'])
-            ? (float)$request->getServerParams()['REQUEST_TIME_FLOAT']
-            : (defined('APP_START_TIME')
-                ? (float)APP_START_TIME
-                : microtime(true));
+        $requestStartTime = $this->getStartTime($request) ?? microtime(true);
 
         if ($request->hasHeader('sentry-trace')) {
             $headers = $request->getHeader('sentry-trace');
@@ -95,10 +89,12 @@ final class SentryTraceMiddleware implements MiddlewareInterface
         }
 
         $context->setOp('http.server');
-        $context->setData([
+        $context->setData(
+            [
             'url' => '/' . ltrim($request->getUri()->getPath(), '/'),
             'method' => strtoupper($request->getMethod()),
-        ]);
+            ]
+        );
         $context->setStartTimestamp($requestStartTime);
 
         $this->transaction = $sentry->startTransaction($context);
@@ -130,11 +126,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
             return null;
         }
 
-        $appStartTime = defined('APP_START_TIME')
-            ? (float)APP_START_TIME
-            : (empty($request->getServerParams()['REQUEST_TIME_FLOAT'])
-                ? null
-                : (float)$request->getServerParams()['REQUEST_TIME_FLOAT']);
+        $appStartTime = $this->getStartTime($request);
 
         if ($appStartTime === null) {
             return null;
@@ -158,8 +150,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
 
     private function addBootDetailTimeSpans(Span $bootstrap): void
     {
-        if (
-            !defined('SENTRY_AUTOLOAD')
+        if (!defined('SENTRY_AUTOLOAD')
             || !SENTRY_AUTOLOAD
             || !is_numeric(SENTRY_AUTOLOAD)
         ) {
@@ -207,10 +198,12 @@ final class SentryTraceMiddleware implements MiddlewareInterface
                 Integration::extractNameForRoute($route)
             );
 
-            $this->transaction->setData([
+            $this->transaction->setData(
+                [
                 'name' => Integration::extractNameForRoute($route),
                 'method' => $request->getMethod(),
-            ]);
+                ]
+            );
         }
 
         $this->updateTransactionNameIfDefault(
@@ -230,9 +223,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
         // If the transaction already has a name other than the default
         // ignore the new name, this will most occur if the user has set a
         // transaction name themself before the application reaches this point
-        if (
-            $this->transaction->getName()
-            !== TransactionContext::DEFAULT_NAME
+        if ($this->transaction->getName() !== TransactionContext::DEFAULT_NAME
         ) {
             return;
         }
@@ -245,13 +236,24 @@ final class SentryTraceMiddleware implements MiddlewareInterface
         $this->transaction?->setHttpStatus($response->getStatusCode());
     }
 
-    public function getAppSpan(): ?Span
+    /**
+     * @param ServerRequestInterface $request
+     *
+     * @return float|null
+     */
+    private function getStartTime(ServerRequestInterface $request): ?float
     {
-        return $this->appSpan;
-    }
+        $attStartTime = $request->getAttribute('applicationStartTime');
+        if (is_numeric($attStartTime) && !empty((float)$attStartTime)) {
+            $requestStartTime = (float)$attStartTime;
+        } else {
+            $requestStartTime = !empty($request->getServerParams()['REQUEST_TIME_FLOAT'])
+                ? (float)$request->getServerParams()['REQUEST_TIME_FLOAT']
+                : (defined('APP_START_TIME')
+                    ? (float)APP_START_TIME
+                    : null);
+        }
 
-    public function setAppSpan(?Span $appSpan): void
-    {
-        $this->appSpan = $appSpan;
+        return $requestStartTime;
     }
 }

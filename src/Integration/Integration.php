@@ -110,20 +110,20 @@ final class Integration implements IntegrationInterface
     public static function logLevelToBreadcrumbLevel(string $level): string
     {
         switch (strtolower($level)) {
-            case 'debug':
-                return Breadcrumb::LEVEL_DEBUG;
-            case 'warning':
-                return Breadcrumb::LEVEL_WARNING;
-            case 'error':
-                return Breadcrumb::LEVEL_ERROR;
-            case 'critical':
-            case 'alert':
-            case 'emergency':
-                return Breadcrumb::LEVEL_FATAL;
-            case 'info':
-            case 'notice':
-            default:
-                return Breadcrumb::LEVEL_INFO;
+        case 'debug':
+            return Breadcrumb::LEVEL_DEBUG;
+        case 'warning':
+            return Breadcrumb::LEVEL_WARNING;
+        case 'error':
+            return Breadcrumb::LEVEL_ERROR;
+        case 'critical':
+        case 'alert':
+        case 'emergency':
+            return Breadcrumb::LEVEL_FATAL;
+        case 'info':
+        case 'notice':
+        default:
+            return Breadcrumb::LEVEL_INFO;
         }
     }
 
@@ -132,19 +132,21 @@ final class Integration implements IntegrationInterface
      */
     public function setupOnce(): void
     {
-        Scope::addGlobalEventProcessor(function (Event $event): Event {
-            $self = SentrySdk::getCurrentHub()->getIntegration(self::class);
+        Scope::addGlobalEventProcessor(
+            function (Event $event): Event {
+                $self = SentrySdk::getCurrentHub()->getIntegration(self::class);
 
-            if (!$self instanceof self) {
+                if (!$self instanceof self) {
+                    return $event;
+                }
+
+                if (empty($event->getTransaction())) {
+                    $event->setTransaction($self->getTransaction());
+                }
+
                 return $event;
             }
-
-            if (empty($event->getTransaction())) {
-                $event->setTransaction($self->getTransaction());
-            }
-
-            return $event;
-        });
+        );
     }
 
     public static function getTransaction(): ?string

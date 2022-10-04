@@ -9,22 +9,17 @@ use Psr\Http\Message\ServerRequestInterface;
 use Sentry\Integration\RequestFetcher;
 use Sentry\Integration\RequestFetcherInterface;
 
-use const PHP_SAPI;
-
 class YiiRequestFetcher implements RequestFetcherInterface
 {
-    public function __construct(
-        private ContainerInterface $container
-    ) {
+    public function __construct(private ContainerInterface $container)
+    {
     }
 
-    /** @psalm-suppress  MixedInferredReturnType */
+    /**
+     * @psalm-suppress MixedInferredReturnType
+     */
     public function fetchRequest(): ?ServerRequestInterface
     {
-        if (PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg') {
-            return null;
-        }
-
         if ($this->container->has(ServerRequestInterface::class)) {
             /** @psalm-suppress  MixedAssignment */
             $result = $this->container->get(ServerRequestInterface::class);

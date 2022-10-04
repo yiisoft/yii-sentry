@@ -14,29 +14,22 @@ class ExceptionContextIntegration implements IntegrationInterface
 {
     public function setupOnce(): void
     {
-        Scope::addGlobalEventProcessor(static function (Event $event, ?EventHint $hint = null): Event {
-            $self = SentrySdk::getCurrentHub()->getIntegration(self::class);
+        Scope::addGlobalEventProcessor(
+            static function (Event $event, ?EventHint $hint = null): Event {
+                $self = SentrySdk::getCurrentHub()->getIntegration(self::class);
 
-            if (!$self instanceof self) {
+                if (!$self instanceof self
+                    || $hint === null
+                    || $hint->exception === null
+                    || !method_exists($hint->exception, 'context')
+                    || !is_array($hint->exception->context())
+                ) {
+                    return $event;
+                }
+                $event->setExtra(['exception_context' => $hint->exception->context()]);
+
                 return $event;
             }
-
-            if ($hint === null || $hint->exception === null) {
-                return $event;
-            }
-
-            if (!method_exists($hint->exception, 'context')) {
-                return $event;
-            }
-
-            /** @psalm-suppress  MixedAssignment  $context */
-            $context = $hint->exception->context();
-
-            if (is_array($context)) {
-                $event->setExtra(['exception_context' => $context]);
-            }
-
-            return $event;
-        });
+        );
     }
 }

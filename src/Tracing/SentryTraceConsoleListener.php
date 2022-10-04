@@ -22,16 +22,12 @@ final class SentryTraceConsoleListener
      * The current active transaction.
      *
      * @psalm-suppress PropertyNotSetInConstructor
-     *
-     * @var Transaction|null
      */
     protected ?Transaction $transaction = null;
     /**
      * The span for the `app.handle` part of the application.
      *
      * @psalm-suppress PropertyNotSetInConstructor
-     *
-     * @var Span|null
      */
     protected ?Span $appSpan = null;
     /**
@@ -39,13 +35,11 @@ final class SentryTraceConsoleListener
      *
      * @psalm-suppress PropertyNotSetInConstructor
      *
-     * @var Span|null
      */
     protected ?Span $bootSpan = null;
     /**
      * The timestamp of application bootstrap completion.
      *
-     * @var float|null
      */
     private ?float $bootedTimestamp;
 
@@ -60,11 +54,9 @@ final class SentryTraceConsoleListener
         return $this->transaction;
     }
 
-    public function setTransaction(?Transaction $transaction): self
+    public function setTransaction(?Transaction $transaction): void
     {
         $this->transaction = $transaction;
-
-        return $this;
     }
 
     public function listenAppStart(): void
@@ -74,39 +66,22 @@ final class SentryTraceConsoleListener
 
     private function startTransaction(): void
     {
-        $requestStartTime = (defined('APP_START_TIME')
-            ? (float)APP_START_TIME
-            : microtime(true));
+        $requestStartTime = defined('APP_START_TIME') ? (float)APP_START_TIME : microtime(true);
         $context = new TransactionContext();
-
         $context->setOp('console');
-
         $context->setStartTimestamp($requestStartTime);
-
         $this->transaction = $this->hub->startTransaction($context);
         $this->transaction->setName('undefined command');
-        // Setting the Transaction on the Hub
         SentrySdk::getCurrentHub()->setSpan($this->transaction);
-
         $this->addAppBootstrapSpan();
     }
 
     private function addAppBootstrapSpan(): void
     {
-        if ($this->bootedTimestamp === null) {
+        if ($this->bootedTimestamp === null || $this->transaction === null) {
             return;
         }
-        if (null === $this->transaction) {
-            return;
-        }
-
-        $appStartTime = defined('APP_START_TIME')
-            ? (float)APP_START_TIME
-            : null;
-
-        if ($appStartTime === null) {
-            return;
-        }
+        $appStartTime = defined('APP_START_TIME') ? (float)APP_START_TIME : microtime(true);
 
         $spanContextStart = new SpanContext();
         $spanContextStart->setOp('app.bootstrap');
@@ -126,11 +101,7 @@ final class SentryTraceConsoleListener
 
     private function addBootDetailTimeSpans(Span $bootstrap): void
     {
-        if (
-            !defined('SENTRY_AUTOLOAD')
-            || !SENTRY_AUTOLOAD
-            || !is_numeric(SENTRY_AUTOLOAD)
-        ) {
+        if (!defined('SENTRY_AUTOLOAD') || !SENTRY_AUTOLOAD || !is_numeric(SENTRY_AUTOLOAD)) {
             return;
         }
 
@@ -151,7 +122,7 @@ final class SentryTraceConsoleListener
 
     private function startCommand(?Command $command, InputInterface $input): void
     {
-        if (null === $this->transaction) {
+        if ($this->transaction === null) {
             return;
         }
         $name = $command?->getName() ?? 'undefined command';
@@ -159,21 +130,20 @@ final class SentryTraceConsoleListener
             'arguments' => $input->getArguments(),
             'options' => $input->getOptions(),
         ];
-        $this->transaction->setData([
+        $this->transaction->setData(
+            [
             'name' => $name,
             'input' => $inputArgs,
-        ]);
+            ]
+        );
         $this->transaction->setName($name);
 
         $bootstrapSpan = $this->bootSpan;
 
         $appContextStart = new SpanContext();
         $appContextStart->setOp('app.handle');
-        $appContextStart->setStartTimestamp(
-            $bootstrapSpan
-                ? $bootstrapSpan->getEndTimestamp()
-                : microtime(true)
-        );
+        $startTimestamp = $bootstrapSpan ? $bootstrapSpan->getEndTimestamp() : microtime(true);
+        $appContextStart->setStartTimestamp($startTimestamp);
 
         $this->appSpan = $this->transaction->startChild($appContextStart);
 
@@ -194,7 +164,7 @@ final class SentryTraceConsoleListener
 
             $this->transaction->setTags(['exitCode' => (string)$exitCode]);
             // Make sure we set the transaction and not have a child span in the Sentry SDK
-            // If the transaction is not on the scope during finish, the trace.context is wrong
+            // If the transaction is not on the scope during finish, the `trace.context` is wrong
             SentrySdk::getCurrentHub()->setSpan($this->transaction);
 
             $this->transaction->finish();
@@ -205,15 +175,5 @@ final class SentryTraceConsoleListener
     public function listenCommandTerminate(?ConsoleTerminateEvent $terminateEvent): void
     {
         $this->appSpan?->finish(microtime(true));
-    }
-
-    public function getAppSpan(): ?Span
-    {
-        return $this->appSpan;
-    }
-
-    public function setAppSpan(?Span $appSpan): void
-    {
-        $this->appSpan = $appSpan;
     }
 }

@@ -52,6 +52,11 @@ final class YiiSentryConfig
                 : throw  new InvalidArgumentException('tracing must be an array');
     }
 
+    public function getMaxGuzzleBodyTrace(): ?int
+    {
+        return empty($this->getTracing()['guzzle_max_body']) ? null : (int)$this->getTracing()['guzzle_max_body'];
+    }
+
     public function getLogLevel(): ?string
     {
         return isset($this->config['log_level']) ? (string)$this->config['log_level'] : null;

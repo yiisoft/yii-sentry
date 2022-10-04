@@ -8,17 +8,11 @@ use Psr\Log\LoggerInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\TransactionContext;
-use Yiisoft\Log\Logger;
 
 class SentryWebTransactionAdapter
 {
-    protected ?Logger $logger = null;
-
-    public function __construct(LoggerInterface $logger, private SentryTraceMiddleware $middleware)
+    public function __construct(private LoggerInterface $logger, private SentryTraceMiddleware $middleware)
     {
-        if ($logger instanceof Logger) {
-            $this->logger = $logger;
-        }
     }
 
     public function begin(?string $sentryTraceString = null): self
@@ -43,7 +37,6 @@ class SentryWebTransactionAdapter
         $appContextStart->setStartTimestamp(microtime(true));
         $appSpan = $transaction->startChild($appContextStart);
         SentrySdk::getCurrentHub()->setSpan($appSpan);
-        $this->middleware->setAppSpan($appSpan);
 
         return $this;
     }
@@ -74,10 +67,10 @@ class SentryWebTransactionAdapter
 
     public function commit(): ?string
     {
-        $this->logger?->info('sentry force commit');
+        $this->logger->info('sentry force commit');
         $sentryTraceString = SentrySdk::getCurrentHub()->getSpan()?->toTraceparent();
-        if (SentrySdk::getCurrentHub()->getTransaction() !== null) {
-            $this->logger?->flush(true);
+        if (method_exists($this->logger, 'flush') && SentrySdk::getCurrentHub()->getTransaction() !== null) {
+            $this->logger->flush(true);
         }
 
         $this->middleware->terminate();

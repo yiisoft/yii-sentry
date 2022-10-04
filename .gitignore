@@ -32,5 +32,3 @@ phpunit.phar
 
 # Phan
 analysis.txt
-
-/docker-compose.override.yml

@@ -22,7 +22,7 @@ use function is_string;
 
 final class HubBootstrapper
 {
-    public const DEFAULT_INTEGRATIONS = [
+    private const DEFAULT_INTEGRATIONS = [
         ExceptionContextIntegration::class,
     ];
 
@@ -99,30 +99,23 @@ final class HubBootstrapper
         $enableDefaultTracingIntegrations = array_key_exists('default_integrations', $this->configuration->getTracing())
             && (bool)$this->configuration->getTracing()['default_integrations'];
 
-        if (
-            $enableDefaultTracingIntegrations
-            && $this->configuration->couldHavePerformanceTracingEnabled()
-        ) {
+        if ($enableDefaultTracingIntegrations && $this->configuration->couldHavePerformanceTracingEnabled()) {
             $integrationsToResolve = array_merge(
                 $integrationsToResolve,
                 self::DEFAULT_INTEGRATIONS
             );
         }
-        /** @psalm-suppress MixedAssignment */
+        /**
+         * @psalm-suppress MixedAssignment
+         */
         foreach ($integrationsToResolve as $userIntegration) {
-            if (
-                $userIntegration instanceof
-                SdkIntegration\IntegrationInterface
+            if ($userIntegration instanceof SdkIntegration\IntegrationInterface
             ) {
                 $integrations[] = $userIntegration;
             } elseif (is_string($userIntegration)) {
                 /** @psalm-suppress MixedAssignment */
                 $resolvedIntegration = $this->container->get($userIntegration);
-
-                if (
-                    !$resolvedIntegration instanceof
-                        SdkIntegration\IntegrationInterface
-                ) {
+                if (!$resolvedIntegration instanceof SdkIntegration\IntegrationInterface) {
                     throw new RuntimeException(
                         sprintf(
                             'Sentry integration must be an instance of `%s` got `%s`.',

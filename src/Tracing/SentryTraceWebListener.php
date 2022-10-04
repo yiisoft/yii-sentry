@@ -11,7 +11,7 @@ use Yiisoft\Middleware\Dispatcher\Event\BeforeMiddleware;
 use Yiisoft\Yii\Http\Event\ApplicationShutdown;
 use Yiisoft\Yii\Sentry\Integration\Integration;
 
-final class EventWebTraceHandler
+final class SentryTraceWebListener
 {
     private ?float $prevTime = null;
 

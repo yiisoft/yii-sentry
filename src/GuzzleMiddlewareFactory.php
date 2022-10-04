@@ -17,8 +17,11 @@ class GuzzleMiddlewareFactory
 {
     private const MAX_LOG_BODY_IN_CHARS = 200;
 
-    public function __construct(private LoggerInterface $logger)
+    private int $maxBody;
+
+    public function __construct(private LoggerInterface $logger, YiiSentryConfig $conf)
     {
+        $this->maxBody = $conf->getMaxGuzzleBodyTrace() ?? self::MAX_LOG_BODY_IN_CHARS;
     }
 
     public function factory(callable $handler): callable
@@ -36,8 +39,8 @@ class GuzzleMiddlewareFactory
             $requestBody = $request->getBody()->isReadable()
                 ? $request->getBody()->getContents()
                 : '[not readable]';
-            if (mb_strlen($requestBody) > self::MAX_LOG_BODY_IN_CHARS) {
-                $requestContentBody = mb_substr($requestBody, 0, self::MAX_LOG_BODY_IN_CHARS) . '...';
+            if (mb_strlen($requestBody) > $this->maxBody) {
+                $requestContentBody = mb_strimwidth($requestBody, 0, $this->maxBody, "...");
             } else {
                 $requestContentBody = $requestBody;
             }
@@ -47,15 +50,16 @@ class GuzzleMiddlewareFactory
             $requestMethod = $request->getMethod();
             $requestHeaders = $request->getHeaders();
 
-            return $response->then(function (ResponseInterface $promiseResponse) use (
-                $startTime,
-                $requestContentBody,
-                $path,
-                $requestHeaders,
-                $requestMethod,
-            ) {
-                $responseContentBody = $this->getResponseContentBody($promiseResponse);
-                $logContext = [
+            return $response->then(
+                function (ResponseInterface $promiseResponse) use (
+                    $startTime,
+                    $requestContentBody,
+                    $path,
+                    $requestHeaders,
+                    $requestMethod,
+                ) {
+                    $responseContentBody = $this->getResponseContentBody($promiseResponse);
+                    $logContext = [
                     'time' => $startTime,
                     'elapsed' => microtime(true) - $startTime,
                     'category' => 'guzzle.request',
@@ -64,18 +68,18 @@ class GuzzleMiddlewareFactory
                     'response_headers' => $promiseResponse->getHeaders(),
                     'request_body' => $requestContentBody,
                     'response_body' => $responseContentBody,
-                ];
-                $this->logger->info($path, $logContext);
+                    ];
+                    $this->logger->info($path, $logContext);
 
-                return $promiseResponse;
-            }, function (Exception $e) use (
-                $startTime,
-                $requestContentBody,
-                $path,
-            ) {
-                if ($e instanceof RequestException) {
-                    $responseContentBody = $this->getResponseContentBody($e->getResponse());
-                    $logContext = [
+                    return $promiseResponse;
+                }, function (Exception $e) use (
+                    $startTime,
+                    $requestContentBody,
+                    $path,
+                ) {
+                    if ($e instanceof RequestException) {
+                        $responseContentBody = $this->getResponseContentBody($e->getResponse());
+                        $logContext = [
                         'time' => $startTime,
                         'elapsed' => microtime(true) - $startTime,
                         'category' => 'guzzle.request',
@@ -87,9 +91,9 @@ class GuzzleMiddlewareFactory
                         'code' => $e->getCode(),
                         'path' => $path,
                         'exception' => $e,
-                    ];
-                } elseif ($e instanceof ConnectException) {
-                    $logContext = [
+                        ];
+                    } elseif ($e instanceof ConnectException) {
+                        $logContext = [
                         'time' => $startTime,
                         'elapsed' => microtime(true) - $startTime,
                         'category' => 'guzzle.request',
@@ -99,20 +103,21 @@ class GuzzleMiddlewareFactory
                         'code' => $e->getCode(),
                         'path' => $path,
                         'exception' => $e,
-                    ];
-                } else {
-                    $logContext = [
+                        ];
+                    } else {
+                        $logContext = [
                         'time' => $startTime,
                         'elapsed' => microtime(true) - $startTime,
                         'category' => 'guzzle.request',
                         'request_body' => $requestContentBody,
                         'path' => $path,
                         'exception' => $e,
-                    ];
-                }
+                        ];
+                    }
 
-                $this->logger->warning($e->getMessage(), $logContext);
-            });
+                    $this->logger->warning($e->getMessage(), $logContext);
+                }
+            );
         };
     }
 

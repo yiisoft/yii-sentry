@@ -1,9 +1,6 @@
-version: '3.8'
-
 services:
   cli:
-    build:
-      context: ./
-      dockerfile: ./docker/php/Dockerfile
-      target: php-cli
+    image: yiisoftware/yii-php:8.0-fpm
     working_dir: /app
+    volumes:
+      - ./:/app

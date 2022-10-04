@@ -117,6 +117,7 @@ Add the following code block to your `params.php` and define DSN. Also you can s
     'tracing' => [
         // Indicates if the tracing integrations supplied by Sentry should be loaded
         'default_integrations'   => true,
+        'guzzle_max_body' => 200,
     ],
 ]
 ```

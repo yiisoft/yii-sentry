@@ -64,7 +64,7 @@ abstract class TestCase extends BaseTestCase
 
     public function getLogger(): LoggerInterface
     {
-        return $this->logger ?? throw new \Exception('need logger');
+        return $this->logger;
     }
 
     protected function assertTransportHasException(string $name, string $message, string $eventKey): void
