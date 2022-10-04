@@ -32,17 +32,16 @@ final class SentryLogAdapter
 
     protected string $minLevel;
 
-    protected array $levels
-        = [
-            LogLevel::EMERGENCY => 0,
-            LogLevel::ALERT => 1,
-            LogLevel::CRITICAL => 2,
-            LogLevel::ERROR => 3,
-            LogLevel::WARNING => 4,
-            LogLevel::NOTICE => 5,
-            LogLevel::INFO => 6,
-            LogLevel::DEBUG => 7,
-        ];
+    protected array $levels = [
+        LogLevel::EMERGENCY => 0,
+        LogLevel::ALERT => 1,
+        LogLevel::CRITICAL => 2,
+        LogLevel::ERROR => 3,
+        LogLevel::WARNING => 4,
+        LogLevel::NOTICE => 5,
+        LogLevel::INFO => 6,
+        LogLevel::DEBUG => 7,
+    ];
 
     public function __construct(private HubInterface $hub, YiiSentryConfig $config) 
     {
