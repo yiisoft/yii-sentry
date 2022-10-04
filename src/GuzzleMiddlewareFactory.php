@@ -36,9 +36,7 @@ class GuzzleMiddlewareFactory
 
             $startTime = microtime(true);
             $path = $request->getMethod() . ':' . $request->getUri()->__toString();
-            $requestBody = $request->getBody()->isReadable()
-                ? $request->getBody()->getContents()
-                : '[not readable]';
+            $requestBody = $request->getBody()->isReadable() ? $request->getBody()->getContents() : '[not readable]';
             if (mb_strlen($requestBody) > $this->maxBody) {
                 $requestContentBody = mb_strimwidth($requestBody, 0, $this->maxBody, "...");
             } else {
