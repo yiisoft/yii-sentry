@@ -23,7 +23,7 @@ class SentryWebTransactionAdapter
         } else {
             $context = new TransactionContext();
         }
-        $context->setOp('web sub task');
+        $context->setOp('web subtask');
 
         $context->setStartTimestamp(microtime(true));
 
