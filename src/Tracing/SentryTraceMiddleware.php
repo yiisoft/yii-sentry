@@ -238,6 +238,7 @@ final class SentryTraceMiddleware implements MiddlewareInterface
 
     private function getStartTime(ServerRequestInterface $request): ?float
     {
+        /** @psalm-suppress MixedAssignment */
         $attStartTime = $request->getAttribute('applicationStartTime');
         if (is_numeric($attStartTime) && !empty((float)$attStartTime)) {
             $requestStartTime = (float)$attStartTime;

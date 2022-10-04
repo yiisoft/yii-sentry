@@ -26,7 +26,7 @@ final class PostgresLoggerDecorator implements LoggerInterface
 
     private function extendContext(array $context, string $message): array
     {
-        if ($this->isPostgresSystemQuery($message)) {
+        if ($this->isSystemQuery($message)) {
             $context['category'] = self::ORM_QUERY_LOG_CATEGORY;
         } else {
             $context['category'] = self::LOG_CATEGORY;

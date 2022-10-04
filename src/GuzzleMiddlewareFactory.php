@@ -42,7 +42,6 @@ class GuzzleMiddlewareFactory
             } else {
                 $requestContentBody = $requestBody;
             }
-            $requestContentBody ??= '[empty]';
             /** @var PromiseInterface $response */
             $response = $handler($request, $options);
 
@@ -128,7 +127,6 @@ class GuzzleMiddlewareFactory
         } else {
             $responseBody = '[not readable]';
         }
-        $responseBody ??= '[empty]';
 
         if (mb_strwidth($responseBody) > $this->maxBody) {
             $responseContentBody = mb_strimwidth($responseBody, 0, $this->maxBody, "...");
