@@ -44,10 +44,8 @@ final class SentryLogAdapter
             LogLevel::DEBUG => 7,
         ];
 
-    public function __construct(
-        private HubInterface $hub,
-        YiiSentryConfig $config,
-    ) {
+    public function __construct(private HubInterface $hub, YiiSentryConfig $config) 
+    {
         $this->minLevel = $config->getLogLevel() ?? LogLevel::ERROR;
     }
 
