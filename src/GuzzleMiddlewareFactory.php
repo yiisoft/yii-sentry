@@ -19,7 +19,7 @@ class GuzzleMiddlewareFactory
 
     private int $maxBody;
 
-    public function __construct(private LoggerInterface $logger, YiiSentryConfig $conf)
+    public function __construct(private LoggerInterface $logger, YiiSentryConfig $config)
     {
         $this->maxBody = $conf->getMaxGuzzleBodyTrace() ?? self::MAX_LOG_BODY_IN_CHARS;
     }
