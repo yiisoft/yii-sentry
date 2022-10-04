@@ -216,8 +216,8 @@ final class SentryLogAdapter
         }
         $formattedContext = [];
         /**
- * @psalm-suppress MixedAssignment
-*/
+         * @psalm-suppress MixedAssignment
+         */
         foreach ($context as $key => $value) {
             $formattedContext[(string)$key] = $value;
         }
