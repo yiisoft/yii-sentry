@@ -236,11 +236,6 @@ final class SentryTraceMiddleware implements MiddlewareInterface
         $this->transaction?->setHttpStatus($response->getStatusCode());
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return float|null
-     */
     private function getStartTime(ServerRequestInterface $request): ?float
     {
         $attStartTime = $request->getAttribute('applicationStartTime');
