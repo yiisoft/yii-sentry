@@ -132,8 +132,8 @@ final class SentryTraceConsoleListener
         ];
         $this->transaction->setData(
             [
-            'name' => $name,
-            'input' => $inputArgs,
+                'name' => $name,
+                'input' => $inputArgs,
             ]
         );
         $this->transaction->setName($name);
