@@ -18,11 +18,12 @@ class ExceptionContextIntegration implements IntegrationInterface
             static function (Event $event, ?EventHint $hint = null): Event {
                 $self = SentrySdk::getCurrentHub()->getIntegration(self::class);
 
-                if (!$self instanceof self
-                    || $hint === null
-                    || $hint->exception === null
-                    || !method_exists($hint->exception, 'context')
-                    || !is_array($hint->exception->context())
+                if (
+                    !$self instanceof self ||
+                    $hint === null ||
+                    $hint->exception === null ||
+                    !method_exists($hint->exception, 'context') ||
+                    !is_array($hint->exception->context())
                 ) {
                     return $event;
                 }
