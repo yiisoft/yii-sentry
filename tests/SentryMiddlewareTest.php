@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Sentry\Tests;
 
-use Couchbase\BaseException;
 use Error;
 use HttpSoft\Message\Response;
 use HttpSoft\Message\ServerRequest;
@@ -16,7 +15,7 @@ use RuntimeException;
 use Sentry\Event;
 use Yiisoft\ErrorHandler\Exception\ErrorException;
 use Yiisoft\Yii\Sentry\SentryMiddleware;
-use Yiisoft\Yii\Sentry\Tests\Stub\ContextableException;
+use Yiisoft\Yii\Sentry\Tests\Stub\ContextException;
 use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
 
 final class SentryMiddlewareTest extends TestCase
@@ -89,7 +88,7 @@ final class SentryMiddlewareTest extends TestCase
         $methodName = debug_backtrace()[0]['function'];
         $eventKey = self::class . "::$methodName()";
 
-        $this->expectException(ContextableException::class);
+        $this->expectException(ContextException::class);
         $this->expectExceptionMessage('Error handler exception test with context.');
         $hub = $this->createSentryHub($eventKey, [
             'options' => [
@@ -106,7 +105,7 @@ final class SentryMiddlewareTest extends TestCase
                 new ServerRequest(method: 'GET', uri: '/'),
                 $this->createRequestHandlerWithContextableErrorHandlerException()
             );
-        } catch (ContextableException $e) {
+        } catch (ContextException $e) {
             $this->assertCount(1, Transport::$events[$eventKey]);
             /** @var Event $event */
             $event = Transport::$events[$eventKey][0];
@@ -166,7 +165,7 @@ final class SentryMiddlewareTest extends TestCase
         return new class () implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
-                throw (new ContextableException('Error handler exception test with context.'))
+                throw (new ContextException('Error handler exception test with context.'))
                     ->addContext(['key'=>'context value']);
             }
         };

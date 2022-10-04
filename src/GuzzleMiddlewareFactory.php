@@ -21,7 +21,7 @@ class GuzzleMiddlewareFactory
 
     public function __construct(private LoggerInterface $logger, YiiSentryConfig $config)
     {
-        $this->maxBody = $conf->getMaxGuzzleBodyTrace() ?? self::MAX_LOG_BODY_IN_CHARS;
+        $this->maxBody = $config->getMaxGuzzleBodyTrace() ?? self::MAX_LOG_BODY_IN_CHARS;
     }
 
     public function factory(callable $handler): callable
@@ -37,11 +37,12 @@ class GuzzleMiddlewareFactory
             $startTime = microtime(true);
             $path = $request->getMethod() . ':' . $request->getUri()->__toString();
             $requestBody = $request->getBody()->isReadable() ? $request->getBody()->getContents() : '[not readable]';
-            if (mb_strlen($requestBody) > $this->maxBody) {
+            if (mb_strwidth($requestBody) > $this->maxBody) {
                 $requestContentBody = mb_strimwidth($requestBody, 0, $this->maxBody, "...");
             } else {
                 $requestContentBody = $requestBody;
             }
+            $requestContentBody ??= '[empty]';
             /** @var PromiseInterface $response */
             $response = $handler($request, $options);
 
@@ -58,14 +59,14 @@ class GuzzleMiddlewareFactory
                 ) {
                     $responseContentBody = $this->getResponseContentBody($promiseResponse);
                     $logContext = [
-                    'time' => $startTime,
-                    'elapsed' => microtime(true) - $startTime,
-                    'category' => 'guzzle.request',
-                    'method' => $requestMethod,
-                    'request_headers' => $requestHeaders,
-                    'response_headers' => $promiseResponse->getHeaders(),
-                    'request_body' => $requestContentBody,
-                    'response_body' => $responseContentBody,
+                        'time' => $startTime,
+                        'elapsed' => microtime(true) - $startTime,
+                        'category' => 'guzzle.request',
+                        'method' => $requestMethod,
+                        'request_headers' => $requestHeaders,
+                        'response_headers' => $promiseResponse->getHeaders(),
+                        'request_body' => $requestContentBody,
+                        'response_body' => $responseContentBody,
                     ];
                     $this->logger->info($path, $logContext);
 
@@ -127,9 +128,10 @@ class GuzzleMiddlewareFactory
         } else {
             $responseBody = '[not readable]';
         }
+        $responseBody ??= '[empty]';
 
-        if (mb_strlen($responseBody) > self::MAX_LOG_BODY_IN_CHARS) {
-            $responseContentBody = mb_substr($responseBody, 0, self::MAX_LOG_BODY_IN_CHARS) . '...';
+        if (mb_strwidth($responseBody) > $this->maxBody) {
+            $responseContentBody = mb_strimwidth($responseBody, 0, $this->maxBody, "...");
         } else {
             $responseContentBody = $responseBody;
         }

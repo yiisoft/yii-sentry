@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Sentry\Tests\Stub;
 
-use JetBrains\PhpStorm\Pure;
-use Throwable;
-
 class ContextException extends \Exception
 {
     public array $context = [];
 
-    public function addContext($contextItem): self
+    public function addContext(mixed $contextItem): self
     {
         $this->context[] = $contextItem;
 

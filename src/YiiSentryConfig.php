@@ -13,16 +13,6 @@ final class YiiSentryConfig
     }
 
     /**
-     * Check if a DSN was set in the config.
-     */
-    public function hasDsnSet(): bool
-    {
-        $config = $this->getUserConfig();
-
-        return !empty($config['options']['dsn']);
-    }
-
-    /**
      * Retrieve the user configuration.
      */
     public function getUserConfig(): array
