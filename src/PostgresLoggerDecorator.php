@@ -37,7 +37,7 @@ final class PostgresLoggerDecorator implements LoggerInterface
         return $context;
     }
 
-    protected function isPostgresSystemQuery(string $srcQuery): bool
+    protected function isSystemQuery(string $srcQuery): bool
     {
         $query = strtolower($srcQuery);
 
