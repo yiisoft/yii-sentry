@@ -169,8 +169,8 @@ final class SentryLogAdapter
     {
         $result = [];
         /**
- * @psalm-suppress MixedAssignment
-*/
+         * @psalm-suppress MixedAssignment
+         */
         foreach ($user as $key => $value) {
             $result[(string)$key] = $value;
         }
