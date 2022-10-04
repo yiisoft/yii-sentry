@@ -81,7 +81,6 @@ final class YiiSentryConfig
     {
         $config = $this->getUserConfig();
 
-        return !empty($config['options']['traces_sample_rate'])
-            || !empty($config['options']['traces_sampler']);
+        return !empty($config['options']['traces_sample_rate']) || !empty($config['options']['traces_sampler']);
     }
 }
