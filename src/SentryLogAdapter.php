@@ -24,7 +24,8 @@ final class SentryLogAdapter
     /**
      * @psalm-suppress PropertyNotSetInConstructor
      *
-     * @description should represent the current version of the calling
+     * @var string|null Represents the current version of the calling software. Can be any string (git commit, 
+     * version number). 
      *             software. Can be any string (git commit, version number)
      */
     protected ?string $release = null;
