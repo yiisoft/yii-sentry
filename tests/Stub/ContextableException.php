@@ -7,7 +7,7 @@ namespace Yiisoft\Yii\Sentry\Tests\Stub;
 use JetBrains\PhpStorm\Pure;
 use Throwable;
 
-class ContextableException extends \Exception
+class ContextException extends \Exception
 {
     public array $context = [];
 
