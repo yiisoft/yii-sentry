@@ -14,9 +14,7 @@ final class PostgresLoggerDecorator implements LoggerInterface
     private const LOG_CATEGORY = 'db_app';
     private const ORM_QUERY_LOG_CATEGORY = 'db_sys';
 
-    public function __construct(
-        private LoggerInterface $defaultLogger
-    ) {
+    public function __construct(private LoggerInterface $defaultLogger) {
     }
 
     public function log($level, string|\Stringable $message, array $context = []): void
