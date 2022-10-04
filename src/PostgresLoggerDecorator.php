@@ -41,12 +41,13 @@ final class PostgresLoggerDecorator implements LoggerInterface
     {
         $query = strtolower($srcQuery);
 
-        return
-            str_contains($query, 'tc.constraint_name')
-            || str_contains($query, 'pg_indexes')
-            || str_contains($query, 'tc.constraint_name')
-            || str_contains($query, 'pg_constraint')
-            || str_contains($query, 'information_schema')
-            || str_contains($query, 'pg_class');
+        return (
+            str_contains($query, 'tc.constraint_name') ||
+            str_contains($query, 'pg_indexes') ||
+            str_contains($query, 'tc.constraint_name') ||
+            str_contains($query, 'pg_constraint') ||
+            str_contains($query, 'information_schema') ||
+            str_contains($query, 'pg_class')
+        );
     }
 }
