@@ -14,7 +14,8 @@ final class PostgresLoggerDecorator implements LoggerInterface
     private const LOG_CATEGORY = 'db_app';
     private const ORM_QUERY_LOG_CATEGORY = 'db_sys';
 
-    public function __construct(private LoggerInterface $defaultLogger) {
+    public function __construct(private LoggerInterface $defaultLogger)
+    {
     }
 
     public function log($level, string|\Stringable $message, array $context = []): void
@@ -41,13 +42,13 @@ final class PostgresLoggerDecorator implements LoggerInterface
     {
         $query = strtolower($srcQuery);
 
-        return (
+        return
             str_contains($query, 'tc.constraint_name') ||
             str_contains($query, 'pg_indexes') ||
             str_contains($query, 'tc.constraint_name') ||
             str_contains($query, 'pg_constraint') ||
             str_contains($query, 'information_schema') ||
             str_contains($query, 'pg_class')
-        );
+        ;
     }
 }

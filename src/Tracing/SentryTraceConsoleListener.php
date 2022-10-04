@@ -34,12 +34,10 @@ final class SentryTraceConsoleListener
      * The span for the `app.handle` part of the application.
      *
      * @psalm-suppress PropertyNotSetInConstructor
-     *
      */
     protected ?Span $bootSpan = null;
     /**
      * The timestamp of application bootstrap completion.
-     *
      */
     private ?float $bootedTimestamp;
 

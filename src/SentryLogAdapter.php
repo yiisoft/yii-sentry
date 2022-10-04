@@ -24,9 +24,8 @@ final class SentryLogAdapter
     /**
      * @psalm-suppress PropertyNotSetInConstructor
      *
-     * @var string|null Represents the current version of the calling software. Can be any string (git commit, 
-     * version number). 
-     *             software. Can be any string (git commit, version number)
+     * @var string|null Represents the current version of the calling software.
+     * Can be any string (git commit, version number).
      */
     protected ?string $release = null;
 
@@ -43,7 +42,7 @@ final class SentryLogAdapter
         LogLevel::DEBUG => 7,
     ];
 
-    public function __construct(private HubInterface $hub, YiiSentryConfig $config) 
+    public function __construct(private HubInterface $hub, YiiSentryConfig $config)
     {
         $this->minLevel = $config->getLogLevel() ?? LogLevel::ERROR;
     }

@@ -38,7 +38,7 @@ class GuzzleMiddlewareFactory
             $path = $request->getMethod() . ':' . $request->getUri()->__toString();
             $requestBody = $request->getBody()->isReadable() ? $request->getBody()->getContents() : '[not readable]';
             if (mb_strwidth($requestBody) > $this->maxBody) {
-                $requestContentBody = mb_strimwidth($requestBody, 0, $this->maxBody, "...");
+                $requestContentBody = mb_strimwidth($requestBody, 0, $this->maxBody, '...');
             } else {
                 $requestContentBody = $requestBody;
             }
@@ -70,7 +70,8 @@ class GuzzleMiddlewareFactory
                     $this->logger->info($path, $logContext);
 
                     return $promiseResponse;
-                }, function (Exception $e) use (
+                },
+                function (Exception $e) use (
                     $startTime,
                     $requestContentBody,
                     $path,
@@ -78,38 +79,38 @@ class GuzzleMiddlewareFactory
                     if ($e instanceof RequestException) {
                         $responseContentBody = $this->getResponseContentBody($e->getResponse());
                         $logContext = [
-                        'time' => $startTime,
-                        'elapsed' => microtime(true) - $startTime,
-                        'category' => 'guzzle.request',
-                        'method' => $e->getRequest()->getMethod(),
-                        'request_headers' => $e->getRequest()->getHeaders(),
-                        'response_headers' => $e->getResponse()?->getHeaders(),
-                        'request_body' => $requestContentBody,
-                        'response_body' => $responseContentBody,
-                        'code' => $e->getCode(),
-                        'path' => $path,
-                        'exception' => $e,
+                            'time' => $startTime,
+                            'elapsed' => microtime(true) - $startTime,
+                            'category' => 'guzzle.request',
+                            'method' => $e->getRequest()->getMethod(),
+                            'request_headers' => $e->getRequest()->getHeaders(),
+                            'response_headers' => $e->getResponse()?->getHeaders(),
+                            'request_body' => $requestContentBody,
+                            'response_body' => $responseContentBody,
+                            'code' => $e->getCode(),
+                            'path' => $path,
+                            'exception' => $e,
                         ];
                     } elseif ($e instanceof ConnectException) {
                         $logContext = [
-                        'time' => $startTime,
-                        'elapsed' => microtime(true) - $startTime,
-                        'category' => 'guzzle.request',
-                        'method' => $e->getRequest()->getMethod(),
-                        'request_headers' => $e->getRequest()->getHeaders(),
-                        'request_body' => $requestContentBody,
-                        'code' => $e->getCode(),
-                        'path' => $path,
-                        'exception' => $e,
+                            'time' => $startTime,
+                            'elapsed' => microtime(true) - $startTime,
+                            'category' => 'guzzle.request',
+                            'method' => $e->getRequest()->getMethod(),
+                            'request_headers' => $e->getRequest()->getHeaders(),
+                            'request_body' => $requestContentBody,
+                            'code' => $e->getCode(),
+                            'path' => $path,
+                            'exception' => $e,
                         ];
                     } else {
                         $logContext = [
-                        'time' => $startTime,
-                        'elapsed' => microtime(true) - $startTime,
-                        'category' => 'guzzle.request',
-                        'request_body' => $requestContentBody,
-                        'path' => $path,
-                        'exception' => $e,
+                            'time' => $startTime,
+                            'elapsed' => microtime(true) - $startTime,
+                            'category' => 'guzzle.request',
+                            'request_body' => $requestContentBody,
+                            'path' => $path,
+                            'exception' => $e,
                         ];
                     }
 
@@ -129,7 +130,7 @@ class GuzzleMiddlewareFactory
         }
 
         if (mb_strwidth($responseBody) > $this->maxBody) {
-            $responseContentBody = mb_strimwidth($responseBody, 0, $this->maxBody, "...");
+            $responseContentBody = mb_strimwidth($responseBody, 0, $this->maxBody, '...');
         } else {
             $responseContentBody = $responseBody;
         }

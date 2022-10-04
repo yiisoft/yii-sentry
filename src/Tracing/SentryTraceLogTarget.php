@@ -57,7 +57,8 @@ final class SentryTraceLogTarget extends Target
                 $parentSpan->startChild($spanContext);
 
                 return $message;
-            }, $this->getMessages()
+            },
+            $this->getMessages()
         );
     }
 }

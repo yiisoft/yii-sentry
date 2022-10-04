@@ -89,12 +89,10 @@ final class SentryTraceMiddleware implements MiddlewareInterface
         }
 
         $context->setOp('http.server');
-        $context->setData(
-            [
+        $context->setData([
             'url' => '/' . ltrim($request->getUri()->getPath(), '/'),
             'method' => strtoupper($request->getMethod()),
-            ]
-        );
+        ]);
         $context->setStartTimestamp($requestStartTime);
 
         $this->transaction = $sentry->startTransaction($context);
@@ -198,12 +196,10 @@ final class SentryTraceMiddleware implements MiddlewareInterface
                 Integration::extractNameForRoute($route)
             );
 
-            $this->transaction->setData(
-                [
+            $this->transaction->setData([
                 'name' => Integration::extractNameForRoute($route),
                 'method' => $request->getMethod(),
-                ]
-            );
+            ]);
         }
 
         $this->updateTransactionNameIfDefault(

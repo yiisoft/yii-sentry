@@ -109,7 +109,7 @@ final class SentryMiddlewareTest extends TestCase
             $this->assertCount(1, Transport::$events[$eventKey]);
             /** @var Event $event */
             $event = Transport::$events[$eventKey][0];
-            $this->assertEquals(['exception_context' => [['key'=>'context value']]], $event->getExtra());
+            $this->assertEquals(['exception_context' => [['key' => 'context value']]], $event->getExtra());
 
             throw $e;
         }
@@ -166,7 +166,7 @@ final class SentryMiddlewareTest extends TestCase
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
                 throw (new ContextException('Error handler exception test with context.'))
-                    ->addContext(['key'=>'context value']);
+                    ->addContext(['key' => 'context value']);
             }
         };
     }
