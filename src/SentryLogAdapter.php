@@ -55,8 +55,8 @@ final class SentryLogAdapter
     public function log(string $level, string $message, array $context): void
     {
         /**
- * @psalm-suppress MixedAssignment
-*/
+         * @psalm-suppress MixedAssignment
+         */
         $exception = $context['exception'] ?? $context['throwable'] ?? null;
         unset($context['exception'], $context['throwable']);
 
