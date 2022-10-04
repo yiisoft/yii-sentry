@@ -79,8 +79,8 @@ final class SentryLogAdapter
 
                 if (!empty($context['tags'])) {
                     /**
-            * @psalm-suppress MixedAssignment
-            */
+                     * @psalm-suppress MixedAssignment
+                     */
                     foreach ($context['tags'] as $key => $tag) {
                         $scope->setTag((string)$key, (string)$tag);
                     }
