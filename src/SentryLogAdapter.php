@@ -100,8 +100,7 @@ final class SentryLogAdapter
                     unset($context['user']);
                 }
 
-                $logger = !empty($context['logger']) ? (string)$context['logger']
-                    : 'default logger';
+                $logger = !empty($context['logger']) ? (string)$context['logger'] : 'default logger';
                 unset($context['logger']);
 
                 if (!empty($context)) {
