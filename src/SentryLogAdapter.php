@@ -194,8 +194,7 @@ final class SentryLogAdapter
 
     private function allowLevel(string $level): bool
     {
-        return ($this->levels[$level] ?? 0)
-            <= ($this->levels[$this->minLevel] ?? 0);
+        return ($this->levels[$level] ?? 0) <= ($this->levels[$this->minLevel] ?? 0);
     }
 
     public function breadcrumb(string $level, string $message, array $context): void
