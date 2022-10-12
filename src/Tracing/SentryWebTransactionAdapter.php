@@ -15,11 +15,11 @@ class SentryWebTransactionAdapter
     {
     }
 
-    public function begin(?string $sentryTraceString = null): self
+    public function begin(?string $sentryTraceString = null, string $baggage = ''): self
     {
         $hub = SentrySdk::getCurrentHub();
         if ($sentryTraceString) {
-            $context = TransactionContext::fromSentryTrace($sentryTraceString);
+            $context = TransactionContext::fromHeaders($sentryTraceString, $baggage);
         } else {
             $context = new TransactionContext();
         }

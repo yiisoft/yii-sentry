@@ -82,8 +82,10 @@ final class SentryTraceMiddleware implements MiddlewareInterface
 
         if ($request->hasHeader('sentry-trace')) {
             $headers = $request->getHeader('sentry-trace');
-            $header = reset($headers);
-            $context = TransactionContext::fromSentryTrace($header);
+            $baggageHeaders = $request->hasHeader('baggage') ? $request->getHeader('baggage') : [];
+            $sentryTraceHeader = (string)reset($headers);
+            $baggageHeader = (string)reset($baggageHeaders);
+            $context = TransactionContext::fromHeaders($sentryTraceHeader, $baggageHeader);
         } else {
             $context = new TransactionContext();
         }

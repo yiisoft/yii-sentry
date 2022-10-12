@@ -16,11 +16,11 @@ final class SentryConsoleTransactionAdapter
     {
     }
 
-    public function begin(?string $sentryTraceString = null): self
+    public function begin(?string $sentryTraceString = null, ?string $baggage = null): self
     {
         $hub = SentrySdk::getCurrentHub();
         if ($sentryTraceString) {
-            $context = TransactionContext::fromSentryTrace($sentryTraceString);
+            $context = TransactionContext::fromHeaders($sentryTraceString, $baggage ?? '');
         } else {
             $context = new TransactionContext();
         }
@@ -74,5 +74,15 @@ final class SentryConsoleTransactionAdapter
         $this->consoleListener->setTransaction(null);
 
         return $sentryTraceString;
+    }
+
+    public function getBaggage(): string
+    {
+        return SentrySdk::getCurrentHub()->getSpan()?->toBaggage() ?? '';
+    }
+
+    public function getTraceString(): string
+    {
+        return SentrySdk::getCurrentHub()->getSpan()?->toTraceparent() ?? '';
     }
 }
