@@ -28,8 +28,12 @@ class GuzzleMiddlewareFactory
     {
         return function (RequestInterface $srcRequest, array $options) use ($handler) {
             $traceHeader = SentrySdk::getCurrentHub()->getSpan()?->toTraceparent();
+            $baggage = SentrySdk::getCurrentHub()->getSpan()?->toBaggage();
             if ($traceHeader) {
                 $request = $srcRequest->withAddedHeader('sentry-trace', $traceHeader);
+                if ($baggage) {
+                    $request = $request->withAddedHeader('baggage', $baggage);
+                }
             } else {
                 $request = clone $srcRequest;
             }
