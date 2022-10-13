@@ -25,10 +25,15 @@ use Sentry\SentrySdk;
 use Sentry\Transport\HttpTransport;
 use Sentry\Transport\NullTransport;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Yiisoft\Definitions\Reference;
 use Yiisoft\Di\Container;
 use Yiisoft\Di\ContainerConfig;
 use Yiisoft\Yii\Sentry\SentryConsoleHandler;
+use Yiisoft\Yii\Console\Event\ApplicationShutdown;
+use Yiisoft\Yii\Console\Event\ApplicationStartup;
+use Yiisoft\Yii\Sentry\Tracing\SentryTraceConsoleListener;
 
 final class ConfigTest extends TestCase
 {
@@ -141,6 +146,18 @@ final class ConfigTest extends TestCase
                 [
                     ConsoleErrorEvent::class => [
                         [SentryConsoleHandler::class, 'handle'],
+                    ],
+                    ApplicationStartup::class => [
+                        [SentryTraceConsoleListener::class, 'listenAppStart'],
+                    ],
+                    ConsoleCommandEvent::class => [
+                        [SentryTraceConsoleListener::class, 'listenBeginCommand'],
+                    ],
+                    ConsoleTerminateEvent::class => [
+                        [SentryTraceConsoleListener::class, 'listenCommandTerminate'],
+                    ],
+                    ApplicationShutdown::class => [
+                        [SentryTraceConsoleListener::class, 'listenShutdown'],
                     ],
                 ],
             ],
