@@ -29,6 +29,7 @@
     "require-dev": {
         "guzzlehttp/guzzle": "^7.3",
         "httpsoft/http-message": "^1.0.9",
+        "maglnet/composer-require-checker": "^4.2",
         "php-http/guzzle7-adapter": "^1.0",
         "phpunit/phpunit": "^9.5",
         "rector/rector": "^0.14.3",
