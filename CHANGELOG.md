@@ -2,7 +2,7 @@
 
 ## 1.0.1 under development
 
-- no changes in this release.
+- Enh #22: Explicitly add transitive dependencies (@xepozz)
 
 ## 1.0.0 July 22, 2022
 
