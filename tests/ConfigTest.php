@@ -159,7 +159,7 @@ final class ConfigTest extends TestCase
     {
         $container = new Container(
             ContainerConfig::create()->withDefinitions(
-                $this->getCommonDefinitions($params)
+                $this->getContainerDefinitions($params)
             )
         );
 
@@ -175,13 +175,13 @@ final class ConfigTest extends TestCase
         return require dirname(__DIR__) . '/config/bootstrap.php';
     }
 
-    private function getCommonDefinitions(?array $params = null): array
+    private function getContainerDefinitions(?array $params = null): array
     {
         if ($params === null) {
             $params = $this->getParams();
         }
 
-        $definitions = require dirname(__DIR__) . '/config/common.php';
+        $definitions = require dirname(__DIR__) . '/config/di.php';
         $additionalDefinitions = [
             // HTTP Factories
             StreamFactoryInterface::class => StreamFactory::class,
