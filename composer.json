@@ -1,5 +1,5 @@
 {
-    "name": "yiisoft/yii-sentry",
+    "name": "webvork/yii-sentry",
     "type": "library",
     "description": "A Sentry integration for Yii Framework",
     "keywords": [
