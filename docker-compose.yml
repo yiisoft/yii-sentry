@@ -1,0 +1,6 @@
+services:
+  cli:
+    image: yiisoftware/yii-php:8.1-fpm
+    working_dir: /app
+    volumes:
+      - ./:/app

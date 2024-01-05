@@ -19,31 +19,36 @@
     },
     "require": {
         "php": "^8.0",
+        "ext-mbstring": "*",
         "psr/http-message": "^1.0",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
-        "sentry/sdk": "^3.2",
-        "sentry/sentry": "^3.11",
+        "psr/log": "^3.0",
+        "sentry/sdk": "^3.3",
         "symfony/console": "^5.4|^6.0",
-        "yiisoft/di": "^1.0"
+        "yiisoft/di": "^1.0",
+        "yiisoft/log": "^2.0",
+        "yiisoft/router": "^1.1",
+        "yiisoft/yii-http": "^1.0"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "^7.3",
         "httpsoft/http-message": "^1.0.9",
-        "maglnet/composer-require-checker": "^4.2",
         "php-http/guzzle7-adapter": "^1.0",
         "phpunit/phpunit": "^9.5",
         "rector/rector": "^0.14.3",
         "roave/infection-static-analysis-plugin": "^1.16",
         "spatie/phpunit-watcher": "^1.23",
-        "vimeo/psalm": "^4.30|^5.6",
+        "vimeo/psalm": "^4.18",
         "yiisoft/error-handler": "^2.1",
         "yiisoft/yii-console": "^1.0",
-        "yiisoft/yii-event": "^1.0"
+        "yiisoft/yii-event": "^1.0",
+        "yiisoft/dummy-provider": "^1.0"
     },
     "suggest": {
         "yiisoft/yii-console": "Add error catching to console application",
-        "yiisoft/yii-event": "Add error catching to console application"
+        "yiisoft/yii-event": "Add error catching to console application",
+        "yiisoft/router-fastroute": "Router implementation based on nikic/FastRoute"
     },
     "autoload": {
         "psr-4": {
@@ -62,8 +67,9 @@
         "config-plugin": {
             "params": "params.php",
             "bootstrap": "bootstrap.php",
-            "di": "di.php",
-            "events-console": "events-console.php"
+            "common": "common.php",
+            "events-console": "events-console.php",
+            "events-web": "events-web.php"
         }
     },
     "config": {
