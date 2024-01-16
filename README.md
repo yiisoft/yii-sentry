@@ -26,7 +26,7 @@ The package needs PSR-compatible HTTP client and factories so require it additio
 ```bash
 composer install httpsoft/http-message
 composer install php-http/guzzle7-adapter
-composer install yiisoft/yii-sentry
+composer install webvork/yii-sentry
 ```
 
 The first two can be replaced to other packages of your choice.
