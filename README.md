@@ -38,7 +38,7 @@ composer install yiisoft/yii-console
 composer install yiisoft/yii-event
 ```
 
-Configure HTTP factories and client (usually that is `config/common/sentry.php`):
+Configure HTTP factories and client (usually that is `config/common/di/sentry.php`):
 
 ```php
 <?php
@@ -46,9 +46,9 @@ Configure HTTP factories and client (usually that is `config/common/sentry.php`)
 declare(strict_types=1);
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
 use Http\Adapter\Guzzle7\Client as GuzzleClientAdapter;
 use Http\Client\HttpAsyncClient;
-use Http\Client\HttpClient;
 use HttpSoft\Message\RequestFactory;
 use HttpSoft\Message\ResponseFactory;
 use HttpSoft\Message\StreamFactory;
@@ -73,7 +73,7 @@ return [
     HttpAsyncClient::class => [
         'class' => GuzzleClientAdapter::class,
         '__construct()' => [
-            Reference::to(HttpClient::class),
+            Reference::to(ClientInterface::class),
         ],
     ],
 ];
