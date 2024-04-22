@@ -19,6 +19,10 @@ The package provides [Sentry](https://sentry.io/) integration for Yii Framework
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyiisoft%2Fyii-sentry%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/yiisoft/yii-sentry/master)
 [![static analysis](https://github.com/yiisoft/yii-sentry/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/yii-sentry/actions?query=workflow%3A%22static+analysis%22)
 
+## Requirements
+
+- PHP 8.0 or higher.
+
 ## Installation
 
 The package needs PSR-compatible HTTP client and factories so require it additionally to this package:
