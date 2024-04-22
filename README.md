@@ -23,7 +23,7 @@ The package provides [Sentry](https://sentry.io/) integration for Yii Framework
 
 The package needs PSR-compatible HTTP client and factories so require it additionally to this package:
 
-```bash
+```shell
 composer install httpsoft/http-message
 composer install php-http/guzzle7-adapter
 composer install yiisoft/yii-sentry
@@ -33,7 +33,7 @@ The first two can be replaced to other packages of your choice.
 
 For handling console errors `yii-console` and `yii-event` packages are required additionally:
 
-```bash
+```shell
 composer install yiisoft/yii-console
 composer install yiisoft/yii-event
 ```
@@ -41,10 +41,6 @@ composer install yiisoft/yii-event
 Configure HTTP factories and client (usually that is `config/common/sentry.php`):
 
 ```php
-<?php
-
-declare(strict_types=1);
-
 use GuzzleHttp\Client as GuzzleClient;
 use Http\Adapter\Guzzle7\Client as GuzzleClientAdapter;
 use Http\Client\HttpAsyncClient;
@@ -79,8 +75,8 @@ return [
 ];
 ```
 
-Then add `SentryMiddleware` to main application middleware set and configure DSN in `config/params.php`. Console errors 
-are captured by default, there is no need to configure anything. 
+Then add `SentryMiddleware` to main application middleware set and configure DSN in `config/params.php`. Console errors
+are captured by default, there is no need to configure anything.
 
 ```php
 return [
@@ -111,29 +107,33 @@ return [
 
 Note that fatal errors are handled too.
 
-In `options` you can also pass additional Sentry configuration. See 
+In `options` you can also pass additional Sentry configuration. See
 [official Sentry docs](https://docs.sentry.io/platforms/php/configuration/options/) for keys and values.
 
-## Unit testing
+## Documentation
 
-The package is tested with [PHPUnit](https://phpunit.de/). To run tests:
+- [Internals](docs/internals.md)
 
-```shell
-./vendor/bin/phpunit
-```
+## Support
 
-## Mutation testing
+If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/63) is a good place for that.
+You may also check out other [Yii Community Resources](https://www.yiiframework.com/community).
 
-The package tests are checked with [Infection](https://infection.github.io/) mutation framework. To run it:
+## Support the project
 
-```shell
-./vendor/bin/infection
-```
+[![Open Collective](https://img.shields.io/badge/Open%20Collective-sponsor-7eadf1?logo=open%20collective&logoColor=7eadf1&labelColor=555555)](https://opencollective.com/yiisoft)
 
-## Static analysis
+## Follow updates
 
-The code is statically analyzed with [Psalm](https://psalm.dev). To run static analysis:
+[![Official website](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
+[![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/yiiframework)
+[![Telegram](https://img.shields.io/badge/telegram-join-1DA1F2?style=flat&logo=telegram)](https://t.me/yii3en)
+[![Facebook](https://img.shields.io/badge/facebook-join-1DA1F2?style=flat&logo=facebook&logoColor=ffffff)](https://www.facebook.com/groups/yiitalk)
+[![Slack](https://img.shields.io/badge/slack-join-1DA1F2?style=flat&logo=slack)](https://yiiframework.com/go/slack)
 
-```shell
-./vendor/bin/psalm
-```
+## License
+
+The Yii Sentry is free software. It is released under the terms of the BSD License.
+Please see [`LICENSE`](./LICENSE.md) for more information.
+
+Maintained by [Yii Software](https://www.yiiframework.com/).
