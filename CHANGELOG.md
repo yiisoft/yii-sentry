@@ -2,7 +2,7 @@
 
 ## 2.0.1 under development
 
-- no changes in this release.
+- Enh #35: Add support for `psr/http-message` version `^2.0` (@bautrukevich)
 
 ## 2.0.0 February 15, 2023
 
