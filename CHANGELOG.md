@@ -1,6 +1,6 @@
 # Yii Sentry Change Log
 
-## 2.0.1 under development
+## 2.0.1 July 15, 2024
 
 - Enh #35: Add support for `psr/http-message` version `^2.0` (@bautrukevich)
 
