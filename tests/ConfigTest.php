@@ -19,11 +19,8 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use ReflectionProperty;
-use Sentry\Client;
 use Sentry\SentrySdk;
 use Sentry\Transport\HttpTransport;
-use Sentry\Transport\NullTransport;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Yiisoft\Definitions\Reference;
 use Yiisoft\Di\Container;
@@ -34,22 +31,19 @@ final class ConfigTest extends TestCase
 {
     public function testDsnIsNotSet(): void
     {
-        $property = new ReflectionProperty(Client::class, 'transport');
-        $property->setAccessible(true);
-
         $this->createContainer();
         $hub = SentrySdk::getCurrentHub();
 
         $client = $hub->getClient();
         $this->assertNull($client->getOptions()->getDsn());
 
-        $transport = $property->getValue($client);
-        $this->assertInstanceOf(NullTransport::class, $transport);
+        $transport = $client->getTransport();
+        $this->assertInstanceOf(HttpTransport::class, $transport);
     }
 
     public function testDsnSet(): void
     {
-        $dsn = 'http://username:password@hostname:9090/path';
+        $dsn = 'http://publicKey@hostname:9090/path';
         $environment = 'test environment';
         $this->createContainer([
             'yiisoft/yii-sentry' => [
@@ -60,16 +54,13 @@ final class ConfigTest extends TestCase
             ],
         ]);
 
-        $property = new ReflectionProperty(Client::class, 'transport');
-        $property->setAccessible(true);
-
         $hub = SentrySdk::getCurrentHub();
 
         $client = $hub->getClient();
         $this->assertSame($dsn, (string) $client->getOptions()->getDsn());
         $this->assertSame($environment, $client->getOptions()->getEnvironment());
 
-        $transport = $property->getValue($client);
+        $transport = $client->getTransport();
         $this->assertInstanceOf(HttpTransport::class, $transport);
     }
 

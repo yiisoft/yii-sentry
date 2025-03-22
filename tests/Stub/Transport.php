@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Sentry\Tests\Stub;
 
-use GuzzleHttp\Promise\FulfilledPromise;
-use GuzzleHttp\Promise\PromiseInterface;
 use Sentry\Event;
-use Sentry\Response;
-use Sentry\ResponseStatus;
+use Sentry\Transport\Result;
+use Sentry\Transport\ResultStatus;
 use Sentry\Transport\TransportInterface;
 
 final class Transport implements TransportInterface
@@ -21,15 +19,15 @@ final class Transport implements TransportInterface
         self::$events[$this->eventKey] = [];
     }
 
-    public function send(Event $event): PromiseInterface
+    public function send(Event $event): Result
     {
         self::$events[$this->eventKey][] = $event;
 
-        return new FulfilledPromise(new Response(ResponseStatus::skipped(), $event));
+        return new Result(ResultStatus::skipped(), $event);
     }
 
-    public function close(?int $timeout = null): PromiseInterface
+    public function close(?int $timeout = null): Result
     {
-        return new FulfilledPromise(true);
+        return new Result(ResultStatus::success());
     }
 }

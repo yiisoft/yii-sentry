@@ -11,7 +11,6 @@ use Sentry\SentrySdk;
 use Sentry\State\Hub;
 use Sentry\State\HubInterface;
 use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
-use Yiisoft\Yii\Sentry\Tests\Stub\TransportFactory;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -19,7 +18,7 @@ abstract class TestCase extends BaseTestCase
     {
         $options = $this->getParams()['yiisoft/yii-sentry']['options'];
         $clientBuilder = new ClientBuilder(new Options($options));
-        $clientBuilder->setTransportFactory(new TransportFactory($eventKey));
+        $clientBuilder->setTransport(new Transport($eventKey));
 
         $client = $clientBuilder->getClient();
 
