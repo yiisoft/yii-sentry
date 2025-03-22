@@ -14,7 +14,9 @@ return [
         $options = $container->get(Options::class);
 
         $clientBuilder = new ClientBuilder($options);
-        $clientBuilder->setLogger($container->get(LoggerInterface::class));
+        if ($options->getLogger() === null && $container->has(LoggerInterface::class)) {
+            $clientBuilder->setLogger($container->get(LoggerInterface::class));
+        }
 
         $client = $clientBuilder->getClient();
 
