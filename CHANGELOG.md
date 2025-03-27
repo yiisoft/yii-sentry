@@ -2,7 +2,8 @@
 
 ## 3.0.0 under development
 
-- Chg #40: Add support for PHP 8.4, yiisoft/yii-console 2.x and yiisoft/yii-event 2.x (@batyrmastyr)
+- Chg #40: Add support for PHP 8.4 (@batyrmastyr)
+- Chg #40: Bump `sentry/sentry` version to `^4.0` (@batyrmastyr)
 
 ## 2.0.1 July 15, 2024
 
