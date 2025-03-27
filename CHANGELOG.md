@@ -2,7 +2,7 @@
 
 ## 3.0.0 under development
 
-- Chg #40: Add support for PHP 8.4, yiisoft/yii-console 2.x and yiisoft/yii-event 2.x. 
+- Chg #40: Add support for PHP 8.4, yiisoft/yii-console 2.x and yiisoft/yii-event 2.x (@batyrmastyr)
 
 ## 2.0.1 July 15, 2024
 
