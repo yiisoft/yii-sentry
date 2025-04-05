@@ -43,44 +43,7 @@ composer install yiisoft/yii-console
 composer install yiisoft/yii-event
 ```
 
-Configure HTTP factories and client (usually that is `config/common/di/sentry.php`):
-
-```php
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\ClientInterface;
-use Http\Adapter\Guzzle7\Client as GuzzleClientAdapter;
-use Http\Client\HttpAsyncClient;
-use HttpSoft\Message\RequestFactory;
-use HttpSoft\Message\ResponseFactory;
-use HttpSoft\Message\StreamFactory;
-use HttpSoft\Message\UriFactory;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\UriFactoryInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
-use Yiisoft\Definitions\Reference;
-
-return [
-    // HTTP Factories
-    StreamFactoryInterface::class => StreamFactory::class,
-    RequestFactoryInterface::class => RequestFactory::class,
-    LoggerInterface::class => NullLogger::class,
-    UriFactoryInterface::class => UriFactory::class,
-    ResponseFactoryInterface::class => ResponseFactory::class,
-    // HTTP Client
-    HttpClient::class => GuzzleClient::class,
-    HttpAsyncClient::class => [
-        'class' => GuzzleClientAdapter::class,
-        '__construct()' => [
-            Reference::to(ClientInterface::class),
-        ],
-    ],
-];
-```
-
-Then add `SentryMiddleware` to main application middleware set and configure DSN in `config/params.php`. Console errors
+Add `SentryMiddleware` to main application middleware set and configure DSN in `config/params.php`. Console errors
 are captured by default, there is no need to configure anything.
 
 ```php

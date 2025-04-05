@@ -4,52 +4,34 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Sentry\Tests;
 
-use GuzzleHttp\Client as GuzzleClient;
-use Http\Adapter\Guzzle7\Client as GuzzleClientAdapter;
-use Http\Client\HttpAsyncClient;
-use Http\Client\HttpClient;
-use HttpSoft\Message\RequestFactory;
-use HttpSoft\Message\ResponseFactory;
-use HttpSoft\Message\StreamFactory;
-use HttpSoft\Message\UriFactory;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\UriFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use ReflectionProperty;
-use Sentry\Client;
 use Sentry\SentrySdk;
 use Sentry\Transport\HttpTransport;
-use Sentry\Transport\NullTransport;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
-use Yiisoft\Definitions\Reference;
 use Yiisoft\Di\Container;
 use Yiisoft\Di\ContainerConfig;
 use Yiisoft\Yii\Sentry\SentryConsoleHandler;
+use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
 
 final class ConfigTest extends TestCase
 {
     public function testDsnIsNotSet(): void
     {
-        $property = new ReflectionProperty(Client::class, 'transport');
-        $property->setAccessible(true);
-
         $this->createContainer();
         $hub = SentrySdk::getCurrentHub();
 
         $client = $hub->getClient();
         $this->assertNull($client->getOptions()->getDsn());
 
-        $transport = $property->getValue($client);
-        $this->assertInstanceOf(NullTransport::class, $transport);
+        $transport = $client->getTransport();
+        $this->assertInstanceOf(HttpTransport::class, $transport);
     }
 
     public function testDsnSet(): void
     {
-        $dsn = 'http://username:password@hostname:9090/path';
+        $dsn = 'http://publicKey@hostname:9090/path';
         $environment = 'test environment';
         $this->createContainer([
             'yiisoft/yii-sentry' => [
@@ -60,16 +42,13 @@ final class ConfigTest extends TestCase
             ],
         ]);
 
-        $property = new ReflectionProperty(Client::class, 'transport');
-        $property->setAccessible(true);
-
         $hub = SentrySdk::getCurrentHub();
 
         $client = $hub->getClient();
         $this->assertSame($dsn, (string) $client->getOptions()->getDsn());
         $this->assertSame($environment, $client->getOptions()->getEnvironment());
 
-        $transport = $property->getValue($client);
+        $transport = $client->getTransport();
         $this->assertInstanceOf(HttpTransport::class, $transport);
     }
 
@@ -155,11 +134,11 @@ final class ConfigTest extends TestCase
         $this->assertEquals($expectedEventsConsole, $this->getEventsConsole($params));
     }
 
-    private function createContainer(?array $params = null): void
+    private function createContainer(?array $params = null, array $additionalDefinitions = []): void
     {
         $container = new Container(
             ContainerConfig::create()->withDefinitions(
-                $this->getContainerDefinitions($params)
+                $this->getContainerDefinitions($params, $additionalDefinitions)
             )
         );
 
@@ -175,29 +154,13 @@ final class ConfigTest extends TestCase
         return require dirname(__DIR__) . '/config/bootstrap.php';
     }
 
-    private function getContainerDefinitions(?array $params = null): array
+    private function getContainerDefinitions(?array $params = null, array $additionalDefinitions = []): array
     {
         if ($params === null) {
             $params = $this->getParams();
         }
 
         $definitions = require dirname(__DIR__) . '/config/di.php';
-        $additionalDefinitions = [
-            // HTTP Factories
-            StreamFactoryInterface::class => StreamFactory::class,
-            RequestFactoryInterface::class => RequestFactory::class,
-            LoggerInterface::class => NullLogger::class,
-            UriFactoryInterface::class => UriFactory::class,
-            ResponseFactoryInterface::class => ResponseFactory::class,
-            // HTTP Client
-            HttpClient::class => GuzzleClient::class,
-            HttpAsyncClient::class => [
-                'class' => GuzzleClientAdapter::class,
-                '__construct()' => [
-                    Reference::to(HttpClient::class),
-                ],
-            ],
-        ];
 
         return array_merge($definitions, $additionalDefinitions);
     }
@@ -210,5 +173,54 @@ final class ConfigTest extends TestCase
     private function getParams(): array
     {
         return require dirname(__DIR__) . '/config/params.php';
+    }
+
+    public function testLoggerDi(): void
+    {
+        $expectedLogger = new NullLogger();
+        $this->createContainer(
+            [
+                'yiisoft/yii-sentry' => [
+                    'options' => [],
+                ],
+            ],
+            [LoggerInterface::class => static fn() => $expectedLogger]
+        );
+
+        $logger = SentrySdk::getCurrentHub()->getClient()->getLogger();
+
+        $this->assertSame($expectedLogger, $logger);
+    }
+
+    public function testLoggerOption(): void
+    {
+        $expectedLogger = new NullLogger();
+        $this->createContainer([
+            'yiisoft/yii-sentry' => [
+                'options' => [
+                    'logger' => $expectedLogger,
+                ],
+            ],
+        ]);
+
+        $logger = SentrySdk::getCurrentHub()->getClient()->getLogger();
+
+        $this->assertSame($expectedLogger, $logger);
+    }
+
+    public function testTransportOption(): void
+    {
+        $expectedTransport = new Transport('transport from di');
+        $this->createContainer([
+            'yiisoft/yii-sentry' => [
+                'options' => [
+                    'transport' => $expectedTransport,
+                ],
+            ],
+        ]);
+
+        $transport = SentrySdk::getCurrentHub()->getClient()->getTransport();
+
+        $this->assertSame($expectedTransport, $transport);
     }
 }
