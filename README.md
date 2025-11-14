@@ -20,7 +20,7 @@ The package provides [Sentry](https://sentry.io/) integration for [Yii Framework
 
 ## Requirements
 
-- PHP 8.0 or higher.
+- PHP 8.1 - 8.4.
 
 ## Installation
 

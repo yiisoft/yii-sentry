@@ -4,6 +4,9 @@
 
 - Chg #40: Add support for PHP 8.4 (@batyrmastyr)
 - Chg #40: Bump `sentry/sentry` version to `^4.0` (@batyrmastyr)
+- Chg #41: Drop support for PHP 8.0 (@rustamwin)
+- Chg #41: Change PHP version constraint to `8.1 - 8.4` (@rustamwin)
+- Enh #41: Add support for `symfony/console` version `^7.0` (@rustamwin)
 
 ## 2.0.1 July 15, 2024
 
