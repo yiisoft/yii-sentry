@@ -17,7 +17,7 @@ use Throwable;
  */
 final class SentryMiddleware implements MiddlewareInterface
 {
-    public function __construct(private HubInterface $hub)
+    public function __construct(private readonly HubInterface $hub)
     {
     }
 

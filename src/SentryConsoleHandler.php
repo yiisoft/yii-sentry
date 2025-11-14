@@ -12,7 +12,7 @@ use Symfony\Component\Console\Event\ConsoleErrorEvent;
  */
 final class SentryConsoleHandler
 {
-    public function __construct(private HubInterface $hub)
+    public function __construct(private readonly HubInterface $hub)
     {
     }
 

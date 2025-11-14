@@ -14,7 +14,7 @@ final class Transport implements TransportInterface
     public static array $events = [];
 
     public function __construct(
-        private string $eventKey
+        private readonly string $eventKey
     ) {
         self::$events[$this->eventKey] = [];
     }
