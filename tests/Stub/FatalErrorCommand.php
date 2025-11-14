@@ -10,8 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class FatalErrorCommand extends BaseCommand
 {
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        trigger_error('Console fatal error test.', E_USER_ERROR);
+        throw new \RuntimeException('Console fatal error test.');
     }
 }

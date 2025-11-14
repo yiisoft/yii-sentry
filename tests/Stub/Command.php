@@ -11,7 +11,7 @@ use Yiisoft\Yii\Console\ExitCode;
 
 final class Command extends BaseCommand
 {
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         return ExitCode::OK;
     }

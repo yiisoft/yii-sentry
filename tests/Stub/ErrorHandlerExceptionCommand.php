@@ -11,7 +11,7 @@ use Yiisoft\ErrorHandler\Exception\ErrorException;
 
 final class ErrorHandlerExceptionCommand extends BaseCommand
 {
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         throw new ErrorException('Console error handler exception test.');
     }
