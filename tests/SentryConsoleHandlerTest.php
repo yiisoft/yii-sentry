@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\Yii\Sentry\Tests;
 
-use PHPUnit\Framework\Error\Error as PHPUnitError;
 use RuntimeException;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Input\StringInput;
