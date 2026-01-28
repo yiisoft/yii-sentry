@@ -30,6 +30,3 @@ phpunit.phar
 # phpunit cache
 /.phpunit.cache
 
-# Static analysis
-analysis.txt
-
