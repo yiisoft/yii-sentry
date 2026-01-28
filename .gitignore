@@ -28,8 +28,8 @@ phpunit.phar
 # local phpunit config
 /phpunit.xml
 # phpunit cache
-.phpunit.result.cache
+/.phpunit.cache
 
-# Phan
+# Static analysis
 analysis.txt
 
