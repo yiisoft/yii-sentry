@@ -2,6 +2,7 @@
 
 ## 3.0.0 under development
 
+- Enh #38: Add support for Sentry cron monitoring via check-ins (@KalimeroMK)
 - Chg #40: Add support for PHP 8.4 (@batyrmastyr)
 - Chg #40: Bump `sentry/sentry` version to `^4.0` (@batyrmastyr)
 - Chg #41: Drop support for PHP 8.0 (@rustamwin)
