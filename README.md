@@ -78,6 +78,33 @@ Note that fatal errors are handled too.
 In `options` you can also pass additional Sentry configuration. See
 [official Sentry docs](https://docs.sentry.io/platforms/php/configuration/options/) for keys and values.
 
+### Cron monitoring
+
+Console commands can be tracked with [Sentry cron monitors](https://docs.sentry.io/platforms/php/crons/).
+Map a command name to a monitor slug in `config/params.php`:
+
+```php
+'yiisoft/yii-sentry' => [
+    'monitoring' => [
+        // Sends an "in_progress" check-in when the command starts and an "ok" or "error" check-in
+        // when it finishes.
+        'app/cleanup' => 'cleanup-monitor',
+        // Array form additionally upserts the monitor configuration on each check-in.
+        'app/report' => [
+            'slug' => 'report-monitor',
+            'schedule' => '0 3 * * *', // Crontab expression, required for the upsert.
+            'timezone' => 'UTC', // Optional, PHP default timezone is used when omitted.
+            'checkinMargin' => 5, // Optional, minutes.
+            'maxRuntime' => 30, // Optional, minutes.
+            'failureIssueThreshold' => 2, // Optional.
+            'recoveryThreshold' => 3, // Optional.
+        ],
+    ],
+],
+```
+
+Cron monitoring requires the DSN to be set and works for commands run via `yii-console`.
+
 ## Documentation
 
 - [Internals](docs/internals.md)
