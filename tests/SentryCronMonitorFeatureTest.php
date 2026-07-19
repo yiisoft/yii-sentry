@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Sentry\Tests;
 
 use Sentry\CheckInStatus;
-use Sentry\Event;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
