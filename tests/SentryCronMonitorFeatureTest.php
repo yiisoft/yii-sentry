@@ -49,6 +49,7 @@ final class SentryCronMonitorFeatureTest extends TestCase
         $this->assertSame(CheckInStatus::ok(), $okCheckIn->getStatus());
         $this->assertIsFloat($okCheckIn->getDuration());
         $this->assertGreaterThanOrEqual(0, $okCheckIn->getDuration());
+        $this->assertLessThan(1, $okCheckIn->getDuration());
         $this->assertSame($inProgressCheckIn->getId(), $okCheckIn->getId());
     }
 

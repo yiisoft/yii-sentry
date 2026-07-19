@@ -15,9 +15,9 @@ use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 
 use function array_key_exists;
 use function date_default_timezone_get;
-use function hrtime;
 use function is_array;
 use function is_string;
+use function microtime;
 use function sprintf;
 
 /**
@@ -30,9 +30,9 @@ use function sprintf;
  */
 final class SentryCronMonitor
 {
-    private ?string $slug = null;
+    private string $slug = '';
     private ?string $checkInId = null;
-    private ?int $startedAt = null;
+    private ?float $startedAt = null;
     private bool $finished = false;
 
     /**
@@ -48,7 +48,13 @@ final class SentryCronMonitor
 
     public function handleCommand(ConsoleCommandEvent $event): void
     {
-        $commandName = $event->getCommand()?->getName();
+        $command = $event->getCommand();
+
+        if ($command === null) {
+            return;
+        }
+
+        $commandName = $command->getName();
 
         if ($commandName === null || !array_key_exists($commandName, $this->monitoring)) {
             return;
@@ -62,7 +68,7 @@ final class SentryCronMonitor
             CheckInStatus::inProgress(),
             monitorConfig: is_array($config) ? $this->createMonitorConfig($config) : null,
         );
-        $this->startedAt = hrtime(true);
+        $this->startedAt = microtime(true);
         $this->finished = false;
     }
 
@@ -80,7 +86,7 @@ final class SentryCronMonitor
 
     private function captureFinalCheckIn(CheckInStatus $status): void
     {
-        if ($this->finished || $this->slug === null || $this->startedAt === null) {
+        if ($this->finished || $this->startedAt === null) {
             return;
         }
 
@@ -89,7 +95,7 @@ final class SentryCronMonitor
         $this->hub->captureCheckIn(
             $this->slug,
             $status,
-            duration: ((float) (hrtime(true) - $this->startedAt)) / 1e9,
+            duration: microtime(true) - $this->startedAt,
             checkInId: $this->checkInId,
         );
     }

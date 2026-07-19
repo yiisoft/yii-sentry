@@ -47,7 +47,7 @@ final class SentryCronMonitorTest extends TestCase
                 'test/command' => [
                     'slug' => 'my-monitor',
                     'schedule' => '0 3 * * *',
-                    'timezone' => 'UTC',
+                    'timezone' => 'Europe/Skopje',
                     'checkinMargin' => 5,
                     'maxRuntime' => 30,
                     'failureIssueThreshold' => 2,
@@ -63,7 +63,7 @@ final class SentryCronMonitorTest extends TestCase
         $this->assertInstanceOf(MonitorConfig::class, $monitorConfig);
         $this->assertSame('crontab', $monitorConfig->getSchedule()->getType());
         $this->assertSame('0 3 * * *', $monitorConfig->getSchedule()->getValue());
-        $this->assertSame('UTC', $monitorConfig->getTimezone());
+        $this->assertSame('Europe/Skopje', $monitorConfig->getTimezone());
         $this->assertSame(5, $monitorConfig->getCheckinMargin());
         $this->assertSame(30, $monitorConfig->getMaxRuntime());
         $this->assertSame(2, $monitorConfig->getFailureRecoveryThreshold());
@@ -133,6 +133,7 @@ final class SentryCronMonitorTest extends TestCase
         $this->assertSame(CheckInStatus::ok(), $status);
         $this->assertIsFloat($duration);
         $this->assertGreaterThanOrEqual(0, $duration);
+        $this->assertLessThan(1, $duration);
         $this->assertNull($monitorConfig);
         $this->assertSame(self::CHECK_IN_ID, $checkInId);
     }
