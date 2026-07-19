@@ -14,6 +14,7 @@ use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 
 use function array_key_exists;
+use function assert;
 use function date_default_timezone_get;
 use function is_array;
 use function is_string;
@@ -49,10 +50,7 @@ final class SentryCronMonitor
     public function handleCommand(ConsoleCommandEvent $event): void
     {
         $command = $event->getCommand();
-
-        if ($command === null) {
-            return;
-        }
+        assert($command !== null);
 
         $commandName = $command->getName();
 
