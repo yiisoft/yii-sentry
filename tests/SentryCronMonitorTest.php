@@ -6,6 +6,7 @@ namespace Yiisoft\Yii\Sentry\Tests;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 use RuntimeException;
 use Sentry\CheckInStatus;
 use Sentry\MonitorConfig;
@@ -247,6 +248,14 @@ final class SentryCronMonitorTest extends TestCase
         $monitor->handleTerminate($this->createTerminateEvent(0));
 
         $this->assertCount(0, $this->calls);
+    }
+
+    public function testMonitorConfigThresholdSupportDetection(): void
+    {
+        $method = new ReflectionMethod(SentryCronMonitor::class, 'hasConstructorParameter');
+
+        $this->assertTrue($method->invoke(null, MonitorConfig::class, 'failureIssueThreshold'));
+        $this->assertFalse($method->invoke(null, MonitorConfig::class, 'noSuchParameter'));
     }
 
     private function createHub(): HubInterface

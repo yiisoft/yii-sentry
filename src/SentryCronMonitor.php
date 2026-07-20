@@ -38,6 +38,7 @@ final class SentryCronMonitor
     private ?string $checkInId = null;
     private ?int $startedAt = null;
     private bool $finished = false;
+    private static ?bool $thresholdsSupported = null;
 
     /**
      * @param array $monitoring Map of console command name to a monitor slug or monitor configuration.
@@ -129,6 +130,7 @@ final class SentryCronMonitor
 
     /**
      * @psalm-param array<array-key, mixed> $config
+     * @psalm-suppress MixedAssignment Values come from userland configuration and are validated below.
      */
     private function createMonitorConfig(array $config): ?MonitorConfig
     {
@@ -166,18 +168,23 @@ final class SentryCronMonitor
 
     private static function monitorConfigSupportsThresholds(): bool
     {
-        static $supports;
+        return self::$thresholdsSupported ??= self::hasConstructorParameter(
+            MonitorConfig::class,
+            'failureIssueThreshold',
+        );
+    }
 
-        if ($supports !== null) {
-            return $supports;
-        }
-
-        foreach ((new ReflectionMethod(MonitorConfig::class, '__construct'))->getParameters() as $parameter) {
-            if ($parameter->getName() === 'failureIssueThreshold') {
-                return $supports = true;
+    /**
+     * @psalm-param class-string $class
+     */
+    private static function hasConstructorParameter(string $class, string $parameter): bool
+    {
+        foreach ((new ReflectionMethod($class, '__construct'))->getParameters() as $reflectionParameter) {
+            if ($reflectionParameter->getName() === $parameter) {
+                return true;
             }
         }
 
-        return $supports = false;
+        return false;
     }
 }
