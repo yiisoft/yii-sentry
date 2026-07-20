@@ -96,8 +96,8 @@ Map a command name to a monitor slug in `config/params.php`:
             'timezone' => 'UTC', // Optional, PHP default timezone is used when omitted.
             'checkinMargin' => 5, // Optional, minutes.
             'maxRuntime' => 30, // Optional, minutes.
-            'failureIssueThreshold' => 2, // Optional.
-            'recoveryThreshold' => 3, // Optional.
+            'failureIssueThreshold' => 2, // Optional, requires sentry/sentry 4.4+.
+            'recoveryThreshold' => 3, // Optional, requires sentry/sentry 4.4+.
         ],
     ],
 ],

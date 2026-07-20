@@ -214,6 +214,20 @@ final class ConfigTest extends TestCase
         $this->assertEquals([], $this->getEventsConsole($params));
     }
 
+    public function testEventsConsoleWithNonArrayMonitoring(): void
+    {
+        $params = [
+            'yiisoft/yii-sentry' => [
+                'options' => [
+                    'dsn' => 'http://username:password@hostname:9090/path',
+                ],
+                'monitoring' => 'cleanup-monitor',
+            ],
+        ];
+
+        $this->assertEquals([], $this->getEventsConsole($params));
+    }
+
     public function testSentryCronMonitorDi(): void
     {
         $monitoring = ['app/cleanup' => 'cleanup-monitor'];

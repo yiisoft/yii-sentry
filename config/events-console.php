@@ -25,7 +25,7 @@ if ($handleErrors) {
 }
 
 $monitoring = $params['yiisoft/yii-sentry']['monitoring'] ?? [];
-if ($monitoring !== []) {
+if (is_array($monitoring) && $monitoring !== []) {
     $events[ConsoleCommandEvent::class][] = [SentryCronMonitor::class, 'handleCommand'];
     $events[ConsoleTerminateEvent::class][] = [SentryCronMonitor::class, 'handleTerminate'];
     $events[ConsoleErrorEvent::class][] = [SentryCronMonitor::class, 'handleError'];

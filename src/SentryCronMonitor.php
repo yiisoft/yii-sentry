@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\Yii\Sentry;
 
 use InvalidArgumentException;
+use ReflectionMethod;
 use Sentry\CheckInStatus;
 use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
@@ -16,9 +17,11 @@ use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use function array_key_exists;
 use function assert;
 use function date_default_timezone_get;
+use function get_debug_type;
+use function hrtime;
 use function is_array;
+use function is_int;
 use function is_string;
-use function microtime;
 use function sprintf;
 
 /**
@@ -33,13 +36,13 @@ final class SentryCronMonitor
 {
     private string $slug = '';
     private ?string $checkInId = null;
-    private ?float $startedAt = null;
+    private ?int $startedAt = null;
     private bool $finished = false;
 
     /**
      * @param array $monitoring Map of console command name to a monitor slug or monitor configuration.
      *
-     * @psalm-param array<string, string|array{slug:string, schedule?:string, timezone?:string, checkinMargin?:int, maxRuntime?:int, failureIssueThreshold?:int, recoveryThreshold?:int}> $monitoring
+     * @psalm-param array<string, mixed> $monitoring
      */
     public function __construct(
         private readonly HubInterface $hub,
@@ -60,13 +63,23 @@ final class SentryCronMonitor
 
         $config = $this->monitoring[$commandName];
 
+        if (!is_string($config) && !is_array($config)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Sentry monitor configuration for the "%s" console command must be a string or an array, got %s.',
+                    $commandName,
+                    get_debug_type($config),
+                )
+            );
+        }
+
         $this->slug = is_string($config) ? $config : $this->extractSlug($config, $commandName);
         $this->checkInId = $this->hub->captureCheckIn(
             $this->slug,
             CheckInStatus::inProgress(),
             monitorConfig: is_array($config) ? $this->createMonitorConfig($config) : null,
         );
-        $this->startedAt = microtime(true);
+        $this->startedAt = hrtime(true);
         $this->finished = false;
     }
 
@@ -93,13 +106,13 @@ final class SentryCronMonitor
         $this->hub->captureCheckIn(
             $this->slug,
             $status,
-            duration: microtime(true) - $this->startedAt,
+            duration: (hrtime(true) - $this->startedAt) / 1_000_000_000,
             checkInId: $this->checkInId,
         );
     }
 
     /**
-     * @psalm-param array{slug?:string, schedule?:string, timezone?:string, checkinMargin?:int, maxRuntime?:int, failureIssueThreshold?:int, recoveryThreshold?:int} $config
+     * @psalm-param array<array-key, mixed> $config
      */
     private function extractSlug(array $config, string $commandName): string
     {
@@ -115,7 +128,7 @@ final class SentryCronMonitor
     }
 
     /**
-     * @psalm-param array{slug?:string, schedule?:string, timezone?:string, checkinMargin?:int, maxRuntime?:int, failureIssueThreshold?:int, recoveryThreshold?:int} $config
+     * @psalm-param array<array-key, mixed> $config
      */
     private function createMonitorConfig(array $config): ?MonitorConfig
     {
@@ -123,13 +136,48 @@ final class SentryCronMonitor
             return null;
         }
 
-        return new MonitorConfig(
-            MonitorSchedule::crontab($config['schedule']),
-            checkinMargin: $config['checkinMargin'] ?? null,
-            maxRuntime: $config['maxRuntime'] ?? null,
-            timezone: $config['timezone'] ?? date_default_timezone_get(),
-            failureIssueThreshold: $config['failureIssueThreshold'] ?? null,
-            recoveryThreshold: $config['recoveryThreshold'] ?? null,
-        );
+        if (!is_string($config['schedule']) || $config['schedule'] === '') {
+            throw new InvalidArgumentException(
+                sprintf('Sentry monitor schedule must be a non-empty string, got %s.', get_debug_type($config['schedule']))
+            );
+        }
+
+        $checkinMargin = $config['checkinMargin'] ?? null;
+        $maxRuntime = $config['maxRuntime'] ?? null;
+        $timezone = $config['timezone'] ?? null;
+        $failureIssueThreshold = $config['failureIssueThreshold'] ?? null;
+        $recoveryThreshold = $config['recoveryThreshold'] ?? null;
+
+        $arguments = [
+            'schedule' => MonitorSchedule::crontab($config['schedule']),
+            'checkinMargin' => is_int($checkinMargin) ? $checkinMargin : null,
+            'maxRuntime' => is_int($maxRuntime) ? $maxRuntime : null,
+            'timezone' => is_string($timezone) && $timezone !== '' ? $timezone : date_default_timezone_get(),
+        ];
+
+        // These `MonitorConfig` parameters were added in sentry/sentry 4.4.
+        if (self::monitorConfigSupportsThresholds()) {
+            $arguments['failureIssueThreshold'] = is_int($failureIssueThreshold) ? $failureIssueThreshold : null;
+            $arguments['recoveryThreshold'] = is_int($recoveryThreshold) ? $recoveryThreshold : null;
+        }
+
+        return new MonitorConfig(...$arguments);
+    }
+
+    private static function monitorConfigSupportsThresholds(): bool
+    {
+        static $supports;
+
+        if ($supports !== null) {
+            return $supports;
+        }
+
+        foreach ((new ReflectionMethod(MonitorConfig::class, '__construct'))->getParameters() as $parameter) {
+            if ($parameter->getName() === 'failureIssueThreshold') {
+                return $supports = true;
+            }
+        }
+
+        return $supports = false;
     }
 }

@@ -120,6 +120,54 @@ final class SentryCronMonitorTest extends TestCase
         $monitor->handleCommand($this->createCommandEvent('test/command'));
     }
 
+    public static function invalidConfigTypeProvider(): array
+    {
+        return [
+            'int' => [42],
+            'bool' => [true],
+            'null' => [null],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidConfigTypeProvider
+     */
+    public function testInvalidConfigTypeThrows(mixed $config): void
+    {
+        $monitor = new SentryCronMonitor($this->createHub(), ['test/command' => $config]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Sentry monitor configuration for the "test/command" console command must be a string or an array'
+        );
+
+        $monitor->handleCommand($this->createCommandEvent('test/command'));
+    }
+
+    public static function invalidScheduleProvider(): array
+    {
+        return [
+            'empty string' => [''],
+            'non-string' => [42],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidScheduleProvider
+     */
+    public function testInvalidScheduleThrows(mixed $schedule): void
+    {
+        $monitor = new SentryCronMonitor(
+            $this->createHub(),
+            ['test/command' => ['slug' => 'my-monitor', 'schedule' => $schedule]]
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Sentry monitor schedule must be a non-empty string');
+
+        $monitor->handleCommand($this->createCommandEvent('test/command'));
+    }
+
     public function testOkCheckInOnTerminate(): void
     {
         $monitor = new SentryCronMonitor($this->createHub(), ['test/command' => 'my-monitor']);
