@@ -156,8 +156,10 @@ final class SentryCronMonitorTest extends TestCase
     public static function invalidScheduleProvider(): array
     {
         return [
-            'empty string' => [''],
             'non-string' => [42],
+            'null' => [null],
+            'empty string' => [''],
+            'empty string with spaces' => ['  '],
         ];
     }
 

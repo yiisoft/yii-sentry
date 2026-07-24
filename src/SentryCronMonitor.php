@@ -22,6 +22,7 @@ use function is_array;
 use function is_int;
 use function is_string;
 use function sprintf;
+use function trim;
 
 /**
  * Sends Sentry cron monitor check-ins for console commands configured in the `cron-monitoring` parameter.
@@ -130,11 +131,11 @@ final class SentryCronMonitor
      */
     private function createMonitorConfig(array $config): ?MonitorConfig
     {
-        if (!isset($config['schedule'])) {
+        if (!array_key_exists('schedule', $config)) {
             return null;
         }
 
-        if (!is_string($config['schedule']) || $config['schedule'] === '') {
+        if (!is_string($config['schedule']) || empty(trim($config['schedule']))) {
             throw new InvalidArgumentException(
                 sprintf('Sentry monitor schedule must be a non-empty string, got %s.', get_debug_type($config['schedule']))
             );
