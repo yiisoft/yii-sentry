@@ -9,10 +9,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Yiisoft\Yii\Console\ExitCode;
 
-final class Command extends BaseCommand
+final class FailureCommand extends BaseCommand
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        return ExitCode::OK;
+        return ExitCode::UNSPECIFIED_ERROR;
     }
 }
