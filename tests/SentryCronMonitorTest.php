@@ -235,6 +235,17 @@ final class SentryCronMonitorTest extends TestCase
         $this->assertCount(0, $this->calls);
     }
 
+    public function testFinalCheckInIsNotSentTwiceOnSecondTerminate(): void
+    {
+        $monitor = new SentryCronMonitor($this->createHub(), ['test/command' => 'my-monitor']);
+
+        $monitor->handleCommand($this->createCommandEvent('test/command'));
+        $monitor->handleTerminate($this->createTerminateEvent(0));
+        $monitor->handleTerminate($this->createTerminateEvent(0));
+
+        $this->assertCount(2, $this->calls);
+    }
+
     public function testMonitorConfigThresholdSupportDetection(): void
     {
         $method = new ReflectionMethod(SentryCronMonitor::class, 'hasConstructorParameter');

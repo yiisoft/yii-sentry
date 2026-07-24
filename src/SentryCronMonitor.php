@@ -39,7 +39,6 @@ final class SentryCronMonitor
     private ?string $checkInId = null;
     private ?int $startedAt = null;
     private bool $finished = false;
-    private static ?bool $thresholdsSupported = null;
 
     /**
      * @param array $monitoring Map of console command name to a monitor slug or monitor configuration.
@@ -92,6 +91,9 @@ final class SentryCronMonitor
         );
     }
 
+    /**
+     * @psalm-suppress InvalidOperand Nanoseconds are converted to seconds with a float divisor.
+     */
     private function captureFinalCheckIn(CheckInStatus $status): void
     {
         if ($this->finished || $this->startedAt === null) {
@@ -103,7 +105,7 @@ final class SentryCronMonitor
         $this->hub->captureCheckIn(
             $this->slug,
             $status,
-            duration: (hrtime(true) - $this->startedAt) / 1_000_000_000,
+            duration: (hrtime(true) - $this->startedAt) / 1e9,
             checkInId: $this->checkInId,
         );
     }
@@ -162,7 +164,8 @@ final class SentryCronMonitor
 
     private static function monitorConfigSupportsThresholds(): bool
     {
-        return self::$thresholdsSupported ??= self::hasConstructorParameter(
+        // ponytail: no memoization - called at most once per command run, reflection cost is negligible.
+        return self::hasConstructorParameter(
             MonitorConfig::class,
             'failureIssueThreshold',
         );
