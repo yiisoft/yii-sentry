@@ -11,7 +11,6 @@ use Sentry\MonitorConfig;
 use Sentry\MonitorSchedule;
 use Sentry\State\HubInterface;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
-use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 
 use function array_key_exists;
@@ -25,10 +24,12 @@ use function is_string;
 use function sprintf;
 
 /**
- * Sends Sentry cron monitor check-ins for console commands configured in the `monitoring` parameter.
+ * Sends Sentry cron monitor check-ins for console commands configured in the `cron-monitoring` parameter.
  *
  * The check-in is sent with `in_progress` status when a command starts and with either `ok` or `error`
- * status when it terminates or fails with an exception.
+ * status, derived from the exit code, when it terminates. The final status is sent on
+ * {@see ConsoleTerminateEvent} only, so an error listener that resets the exit code to `0`
+ * results in an `ok` check-in.
  *
  * @see https://docs.sentry.io/platforms/php/crons/
  */
@@ -74,7 +75,7 @@ final class SentryCronMonitor
             );
         }
 
-        $this->slug = is_string($config) ? $config : $this->extractSlug($config, $commandName);
+        $this->slug = $this->validateSlug(is_string($config) ? $config : ($config['slug'] ?? null), $commandName);
         $this->checkInId = $this->hub->captureCheckIn(
             $this->slug,
             CheckInStatus::inProgress(),
@@ -82,11 +83,6 @@ final class SentryCronMonitor
         );
         $this->startedAt = hrtime(true);
         $this->finished = false;
-    }
-
-    public function handleError(ConsoleErrorEvent $event): void
-    {
-        $this->captureFinalCheckIn(CheckInStatus::error());
     }
 
     public function handleTerminate(ConsoleTerminateEvent $event): void
@@ -113,12 +109,10 @@ final class SentryCronMonitor
     }
 
     /**
-     * @psalm-param array<array-key, mixed> $config
+     * @psalm-suppress MixedArgument The slug comes from userland configuration and is validated below.
      */
-    private function extractSlug(array $config, string $commandName): string
+    private function validateSlug(mixed $slug, string $commandName): string
     {
-        $slug = $config['slug'] ?? null;
-
         if (!is_string($slug) || $slug === '') {
             throw new InvalidArgumentException(
                 sprintf('Sentry monitor slug for the "%s" console command is not configured.', $commandName)

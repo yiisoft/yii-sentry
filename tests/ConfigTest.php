@@ -145,7 +145,7 @@ final class ConfigTest extends TestCase
                 'options' => [
                     'dsn' => 'http://username:password@hostname:9090/path',
                 ],
-                'monitoring' => [
+                'cron-monitoring' => [
                     'app/cleanup' => 'cleanup-monitor',
                 ],
             ],
@@ -158,9 +158,6 @@ final class ConfigTest extends TestCase
                 ],
                 ConsoleTerminateEvent::class => [
                     [SentryCronMonitor::class, 'handleTerminate'],
-                ],
-                ConsoleErrorEvent::class => [
-                    [SentryCronMonitor::class, 'handleError'],
                 ],
             ],
             $this->getEventsConsole($params)
@@ -175,7 +172,7 @@ final class ConfigTest extends TestCase
                 'options' => [
                     'dsn' => 'http://username:password@hostname:9090/path',
                 ],
-                'monitoring' => [
+                'cron-monitoring' => [
                     'app/cleanup' => 'cleanup-monitor',
                 ],
             ],
@@ -191,7 +188,6 @@ final class ConfigTest extends TestCase
                 ],
                 ConsoleErrorEvent::class => [
                     [SentryConsoleHandler::class, 'handle'],
-                    [SentryCronMonitor::class, 'handleError'],
                 ],
             ],
             $this->getEventsConsole($params)
@@ -205,7 +201,7 @@ final class ConfigTest extends TestCase
                 'options' => [
                     'dsn' => null,
                 ],
-                'monitoring' => [
+                'cron-monitoring' => [
                     'app/cleanup' => 'cleanup-monitor',
                 ],
             ],
@@ -221,7 +217,7 @@ final class ConfigTest extends TestCase
                 'options' => [
                     'dsn' => 'http://username:password@hostname:9090/path',
                 ],
-                'monitoring' => 'cleanup-monitor',
+                'cron-monitoring' => 'cleanup-monitor',
             ],
         ];
 
@@ -236,7 +232,7 @@ final class ConfigTest extends TestCase
                 $this->getContainerDefinitions([
                     'yiisoft/yii-sentry' => [
                         'options' => [],
-                        'monitoring' => $monitoring,
+                        'cron-monitoring' => $monitoring,
                     ],
                 ])
             )

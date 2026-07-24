@@ -83,6 +83,29 @@ final class SentryCronMonitorFeatureTest extends TestCase
         $this->assertSame($events[0]->getCheckIn()?->getId(), $events[1]->getCheckIn()?->getId());
     }
 
+    public function testCommandWithExceptionHandledByErrorListener(): void
+    {
+        $methodName = debug_backtrace()[0]['function'];
+        $eventKey = self::class . "::$methodName()";
+
+        $this->createAndRunApp(
+            $eventKey,
+            'test/command',
+            ExceptionCommand::class,
+            ['test/command' => 'my-monitor'],
+            static function (ConsoleErrorEvent $event): void {
+                $event->setExitCode(0);
+            },
+        );
+
+        $events = Transport::$events[$eventKey];
+        $this->assertCount(2, $events);
+
+        $this->assertSame(CheckInStatus::inProgress(), $events[0]->getCheckIn()?->getStatus());
+        $this->assertSame(CheckInStatus::ok(), $events[1]->getCheckIn()?->getStatus());
+        $this->assertSame($events[0]->getCheckIn()?->getId(), $events[1]->getCheckIn()?->getId());
+    }
+
     public function testCommandWithMonitorConfig(): void
     {
         $methodName = debug_backtrace()[0]['function'];
@@ -121,20 +144,27 @@ final class SentryCronMonitorFeatureTest extends TestCase
         $this->assertCount(0, Transport::$events[$eventKey]);
     }
 
-    private function createAndRunApp(string $eventKey, string $commandName, string $commandClass, array $monitoring): void
-    {
+    private function createAndRunApp(
+        string $eventKey,
+        string $commandName,
+        string $commandClass,
+        array $monitoring,
+        ?callable $errorListener = null,
+    ): void {
         $monitor = new SentryCronMonitor($this->createSentryHub($eventKey), $monitoring);
 
         $listeners = (new ListenerCollection())
             ->add(static function (ConsoleCommandEvent $event) use ($monitor): void {
                 $monitor->handleCommand($event);
             })
-            ->add(static function (ConsoleErrorEvent $event) use ($monitor): void {
-                $monitor->handleError($event);
-            })
             ->add(static function (ConsoleTerminateEvent $event) use ($monitor): void {
                 $monitor->handleTerminate($event);
             });
+        if ($errorListener !== null) {
+            $listeners = $listeners->add(static function (ConsoleErrorEvent $event) use ($errorListener): void {
+                $errorListener($event);
+            });
+        }
         $provider = new Provider($listeners);
         $dispatcher = new Dispatcher($provider);
         $dispatcher = new SymfonyEventDispatcher($dispatcher);

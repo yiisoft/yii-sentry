@@ -85,7 +85,7 @@ Map a command name to a monitor slug in `config/params.php`:
 
 ```php
 'yiisoft/yii-sentry' => [
-    'monitoring' => [
+    'cron-monitoring' => [
         // Sends an "in_progress" check-in when the command starts and an "ok" or "error" check-in
         // when it finishes.
         'app/cleanup' => 'cleanup-monitor',

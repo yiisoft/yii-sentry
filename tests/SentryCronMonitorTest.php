@@ -7,12 +7,10 @@ namespace Yiisoft\Yii\Sentry\Tests;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
-use RuntimeException;
 use Sentry\CheckInStatus;
 use Sentry\MonitorConfig;
 use Sentry\State\HubInterface;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
-use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -121,6 +119,16 @@ final class SentryCronMonitorTest extends TestCase
         $monitor->handleCommand($this->createCommandEvent('test/command'));
     }
 
+    public function testEmptyStringSlugThrows(): void
+    {
+        $monitor = new SentryCronMonitor($this->createHub(), ['test/command' => '']);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Sentry monitor slug for the "test/command" console command is not configured.');
+
+        $monitor->handleCommand($this->createCommandEvent('test/command'));
+    }
+
     public static function invalidConfigTypeProvider(): array
     {
         return [
@@ -185,29 +193,6 @@ final class SentryCronMonitorTest extends TestCase
         $this->assertLessThan(1, $duration);
         $this->assertNull($monitorConfig);
         $this->assertSame(self::CHECK_IN_ID, $checkInId);
-    }
-
-    public function testErrorCheckInOnErrorEvent(): void
-    {
-        $monitor = new SentryCronMonitor($this->createHub(), ['test/command' => 'my-monitor']);
-
-        $monitor->handleCommand($this->createCommandEvent('test/command'));
-        $monitor->handleError($this->createErrorEvent());
-
-        $this->assertCount(2, $this->calls);
-        $this->assertSame(CheckInStatus::error(), $this->calls[1][1]);
-        $this->assertSame(self::CHECK_IN_ID, $this->calls[1][4]);
-    }
-
-    public function testErrorCheckInIsNotSentTwiceOnTerminateAfterError(): void
-    {
-        $monitor = new SentryCronMonitor($this->createHub(), ['test/command' => 'my-monitor']);
-
-        $monitor->handleCommand($this->createCommandEvent('test/command'));
-        $monitor->handleError($this->createErrorEvent());
-        $monitor->handleTerminate($this->createTerminateEvent(1));
-
-        $this->assertCount(2, $this->calls);
     }
 
     public function testErrorCheckInOnNonZeroExitCode(): void
@@ -288,10 +273,5 @@ final class SentryCronMonitorTest extends TestCase
         $command = (new Command())->setName('test/command');
 
         return new ConsoleTerminateEvent($command, new StringInput(''), new NullOutput(), $exitCode);
-    }
-
-    private function createErrorEvent(): ConsoleErrorEvent
-    {
-        return new ConsoleErrorEvent(new StringInput(''), new NullOutput(), new RuntimeException('test'));
     }
 }

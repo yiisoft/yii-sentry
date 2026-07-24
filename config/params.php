@@ -7,7 +7,7 @@ use Sentry\Event;
 return [
     'yiisoft/yii-sentry' => [
         'handleConsoleErrors' => true,
-        'monitoring' => [],
+        'cron-monitoring' => [],
         'options' => [
             'dsn' => null,
             'before_send' => static function (Event $event): ?Event {

@@ -22,7 +22,7 @@ return [
     SentryCronMonitor::class => [
         'class' => SentryCronMonitor::class,
         '__construct()' => [
-            'monitoring' => $params['yiisoft/yii-sentry']['monitoring'] ?? [],
+            'monitoring' => $params['yiisoft/yii-sentry']['cron-monitoring'] ?? [],
         ],
     ],
 ];
