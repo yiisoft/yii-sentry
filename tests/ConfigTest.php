@@ -7,12 +7,16 @@ namespace Yiisoft\Yii\Sentry\Tests;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use ReflectionProperty;
 use Sentry\SentrySdk;
 use Sentry\Transport\HttpTransport;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Yiisoft\Di\Container;
 use Yiisoft\Di\ContainerConfig;
 use Yiisoft\Yii\Sentry\SentryConsoleHandler;
+use Yiisoft\Yii\Sentry\SentryCronMonitor;
 use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
 
 final class ConfigTest extends TestCase
@@ -52,7 +56,7 @@ final class ConfigTest extends TestCase
         $this->assertInstanceOf(HttpTransport::class, $transport);
     }
 
-    public function eventsConsoleDataProvider(): array
+    public static function eventsConsoleDataProvider(): array
     {
         return [
             'disabledWithDsnAndHandleConsoleErrors' => [
@@ -132,6 +136,113 @@ final class ConfigTest extends TestCase
     public function testEventsConsole(array $params, $expectedEventsConsole): void
     {
         $this->assertEquals($expectedEventsConsole, $this->getEventsConsole($params));
+    }
+
+    public function testEventsConsoleWithMonitoring(): void
+    {
+        $params = [
+            'yiisoft/yii-sentry' => [
+                'options' => [
+                    'dsn' => 'http://username:password@hostname:9090/path',
+                ],
+                'cron-monitoring' => [
+                    'app/cleanup' => 'cleanup-monitor',
+                ],
+            ],
+        ];
+
+        $this->assertEquals(
+            [
+                ConsoleCommandEvent::class => [
+                    [SentryCronMonitor::class, 'handleCommand'],
+                ],
+                ConsoleTerminateEvent::class => [
+                    [SentryCronMonitor::class, 'handleTerminate'],
+                ],
+            ],
+            $this->getEventsConsole($params)
+        );
+    }
+
+    public function testEventsConsoleWithMonitoringAndHandleConsoleErrors(): void
+    {
+        $params = [
+            'yiisoft/yii-sentry' => [
+                'handleConsoleErrors' => true,
+                'options' => [
+                    'dsn' => 'http://username:password@hostname:9090/path',
+                ],
+                'cron-monitoring' => [
+                    'app/cleanup' => 'cleanup-monitor',
+                ],
+            ],
+        ];
+
+        $this->assertEquals(
+            [
+                ConsoleCommandEvent::class => [
+                    [SentryCronMonitor::class, 'handleCommand'],
+                ],
+                ConsoleTerminateEvent::class => [
+                    [SentryCronMonitor::class, 'handleTerminate'],
+                ],
+                ConsoleErrorEvent::class => [
+                    [SentryConsoleHandler::class, 'handle'],
+                ],
+            ],
+            $this->getEventsConsole($params)
+        );
+    }
+
+    public function testEventsConsoleWithMonitoringWithoutDsn(): void
+    {
+        $params = [
+            'yiisoft/yii-sentry' => [
+                'options' => [
+                    'dsn' => null,
+                ],
+                'cron-monitoring' => [
+                    'app/cleanup' => 'cleanup-monitor',
+                ],
+            ],
+        ];
+
+        $this->assertEquals([], $this->getEventsConsole($params));
+    }
+
+    public function testEventsConsoleWithNonArrayMonitoring(): void
+    {
+        $params = [
+            'yiisoft/yii-sentry' => [
+                'options' => [
+                    'dsn' => 'http://username:password@hostname:9090/path',
+                ],
+                'cron-monitoring' => 'cleanup-monitor',
+            ],
+        ];
+
+        $this->assertEquals([], $this->getEventsConsole($params));
+    }
+
+    public function testSentryCronMonitorDi(): void
+    {
+        $monitoring = ['app/cleanup' => 'cleanup-monitor'];
+        $container = new Container(
+            ContainerConfig::create()->withDefinitions(
+                $this->getContainerDefinitions([
+                    'yiisoft/yii-sentry' => [
+                        'options' => [],
+                        'cron-monitoring' => $monitoring,
+                    ],
+                ])
+            )
+        );
+
+        $monitor = $container->get(SentryCronMonitor::class);
+
+        $this->assertInstanceOf(SentryCronMonitor::class, $monitor);
+        $property = new ReflectionProperty(SentryCronMonitor::class, 'monitoring');
+        $this->assertSame($monitoring, $property->getValue($monitor));
     }
 
     private function createContainer(?array $params = null, array $additionalDefinitions = []): void
