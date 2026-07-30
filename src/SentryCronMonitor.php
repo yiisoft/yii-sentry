@@ -49,8 +49,7 @@ final class SentryCronMonitor
     public function __construct(
         private readonly HubInterface $hub,
         private readonly array $monitoring = [],
-    ) {
-    }
+    ) {}
 
     public function handleCommand(ConsoleCommandEvent $event): void
     {
@@ -71,7 +70,7 @@ final class SentryCronMonitor
                     'Sentry monitor configuration for the "%s" console command must be a string or an array, got %s.',
                     $commandName,
                     get_debug_type($config),
-                )
+                ),
             );
         }
 
@@ -88,7 +87,7 @@ final class SentryCronMonitor
     public function handleTerminate(ConsoleTerminateEvent $event): void
     {
         $this->captureFinalCheckIn(
-            $event->getExitCode() === 0 ? CheckInStatus::ok() : CheckInStatus::error()
+            $event->getExitCode() === 0 ? CheckInStatus::ok() : CheckInStatus::error(),
         );
     }
 
@@ -118,7 +117,7 @@ final class SentryCronMonitor
     {
         if (!is_string($slug) || $slug === '') {
             throw new InvalidArgumentException(
-                sprintf('Sentry monitor slug for the "%s" console command is not configured.', $commandName)
+                sprintf('Sentry monitor slug for the "%s" console command is not configured.', $commandName),
             );
         }
 
@@ -137,7 +136,7 @@ final class SentryCronMonitor
 
         if (!is_string($config['schedule']) || empty(trim($config['schedule']))) {
             throw new InvalidArgumentException(
-                sprintf('Sentry monitor schedule must be a non-empty string, got %s.', get_debug_type($config['schedule']))
+                sprintf('Sentry monitor schedule must be a non-empty string, got %s.', get_debug_type($config['schedule'])),
             );
         }
 

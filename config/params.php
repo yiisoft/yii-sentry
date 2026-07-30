@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Sentry\Event;
+use Yiisoft\ErrorHandler\Exception\ErrorException;
 
 return [
     'yiisoft/yii-sentry' => [
@@ -12,7 +13,7 @@ return [
             'dsn' => null,
             'before_send' => static function (Event $event): ?Event {
                 foreach ($event->getExceptions() as $exception) {
-                    if ($exception->getType() === 'Yiisoft\ErrorHandler\Exception\ErrorException') {
+                    if ($exception->getType() === ErrorException::class) {
                         return null;
                     }
                 }
