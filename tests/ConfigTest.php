@@ -19,6 +19,8 @@ use Yiisoft\Yii\Sentry\SentryConsoleHandler;
 use Yiisoft\Yii\Sentry\SentryCronMonitor;
 use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
 
+use function dirname;
+
 final class ConfigTest extends TestCase
 {
     public function testDsnIsNotSet(): void
@@ -160,7 +162,7 @@ final class ConfigTest extends TestCase
                     [SentryCronMonitor::class, 'handleTerminate'],
                 ],
             ],
-            $this->getEventsConsole($params)
+            $this->getEventsConsole($params),
         );
     }
 
@@ -190,7 +192,7 @@ final class ConfigTest extends TestCase
                     [SentryConsoleHandler::class, 'handle'],
                 ],
             ],
-            $this->getEventsConsole($params)
+            $this->getEventsConsole($params),
         );
     }
 
@@ -234,8 +236,8 @@ final class ConfigTest extends TestCase
                         'options' => [],
                         'cron-monitoring' => $monitoring,
                     ],
-                ])
-            )
+                ]),
+            ),
         );
 
         $monitor = $container->get(SentryCronMonitor::class);
@@ -243,47 +245,6 @@ final class ConfigTest extends TestCase
         $this->assertInstanceOf(SentryCronMonitor::class, $monitor);
         $property = new ReflectionProperty(SentryCronMonitor::class, 'monitoring');
         $this->assertSame($monitoring, $property->getValue($monitor));
-    }
-
-    private function createContainer(?array $params = null, array $additionalDefinitions = []): void
-    {
-        $container = new Container(
-            ContainerConfig::create()->withDefinitions(
-                $this->getContainerDefinitions($params, $additionalDefinitions)
-            )
-        );
-
-        $bootstrapList = $this->getBootstrapList();
-        $this->assertCount(1, $bootstrapList);
-
-        $callback = $bootstrapList[0];
-        $callback($container);
-    }
-
-    private function getBootstrapList(): array
-    {
-        return require dirname(__DIR__) . '/config/bootstrap.php';
-    }
-
-    private function getContainerDefinitions(?array $params = null, array $additionalDefinitions = []): array
-    {
-        if ($params === null) {
-            $params = $this->getParams();
-        }
-
-        $definitions = require dirname(__DIR__) . '/config/di.php';
-
-        return array_merge($definitions, $additionalDefinitions);
-    }
-
-    private function getEventsConsole(array $params): array
-    {
-        return require dirname(__DIR__) . '/config/events-console.php';
-    }
-
-    private function getParams(): array
-    {
-        return require dirname(__DIR__) . '/config/params.php';
     }
 
     public function testLoggerDi(): void
@@ -295,7 +256,7 @@ final class ConfigTest extends TestCase
                     'options' => [],
                 ],
             ],
-            [LoggerInterface::class => static fn() => $expectedLogger]
+            [LoggerInterface::class => static fn() => $expectedLogger],
         );
 
         $logger = SentrySdk::getCurrentHub()->getClient()->getLogger();
@@ -333,5 +294,46 @@ final class ConfigTest extends TestCase
         $transport = SentrySdk::getCurrentHub()->getClient()->getTransport();
 
         $this->assertSame($expectedTransport, $transport);
+    }
+
+    private function createContainer(?array $params = null, array $additionalDefinitions = []): void
+    {
+        $container = new Container(
+            ContainerConfig::create()->withDefinitions(
+                $this->getContainerDefinitions($params, $additionalDefinitions),
+            ),
+        );
+
+        $bootstrapList = $this->getBootstrapList();
+        $this->assertCount(1, $bootstrapList);
+
+        $callback = $bootstrapList[0];
+        $callback($container);
+    }
+
+    private function getBootstrapList(): array
+    {
+        return require dirname(__DIR__) . '/config/bootstrap.php';
+    }
+
+    private function getContainerDefinitions(?array $params = null, array $additionalDefinitions = []): array
+    {
+        if ($params === null) {
+            $params = $this->getParams();
+        }
+
+        $definitions = require dirname(__DIR__) . '/config/di.php';
+
+        return array_merge($definitions, $additionalDefinitions);
+    }
+
+    private function getEventsConsole(array $params): array
+    {
+        return require dirname(__DIR__) . '/config/events-console.php';
+    }
+
+    private function getParams(): array
+    {
+        return require dirname(__DIR__) . '/config/params.php';
     }
 }

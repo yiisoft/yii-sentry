@@ -52,7 +52,7 @@ final class SentryCronMonitorTest extends TestCase
                     'failureIssueThreshold' => 2,
                     'recoveryThreshold' => 3,
                 ],
-            ]
+            ],
         );
 
         $monitor->handleCommand($this->createCommandEvent('test/command'));
@@ -73,7 +73,7 @@ final class SentryCronMonitorTest extends TestCase
     {
         $monitor = new SentryCronMonitor(
             $this->createHub(),
-            ['test/command' => ['slug' => 'my-monitor']]
+            ['test/command' => ['slug' => 'my-monitor']],
         );
 
         $monitor->handleCommand($this->createCommandEvent('test/command'));
@@ -87,7 +87,7 @@ final class SentryCronMonitorTest extends TestCase
     {
         $monitor = new SentryCronMonitor(
             $this->createHub(),
-            ['test/command' => ['slug' => 'my-monitor', 'schedule' => '* * * * *']]
+            ['test/command' => ['slug' => 'my-monitor', 'schedule' => '* * * * *']],
         );
 
         $monitor->handleCommand($this->createCommandEvent('test/command'));
@@ -147,7 +147,7 @@ final class SentryCronMonitorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Sentry monitor configuration for the "test/command" console command must be a string or an array'
+            'Sentry monitor configuration for the "test/command" console command must be a string or an array',
         );
 
         $monitor->handleCommand($this->createCommandEvent('test/command'));
@@ -170,7 +170,7 @@ final class SentryCronMonitorTest extends TestCase
     {
         $monitor = new SentryCronMonitor(
             $this->createHub(),
-            ['test/command' => ['slug' => 'my-monitor', 'schedule' => $schedule]]
+            ['test/command' => ['slug' => 'my-monitor', 'schedule' => $schedule]],
         );
 
         $this->expectException(InvalidArgumentException::class);

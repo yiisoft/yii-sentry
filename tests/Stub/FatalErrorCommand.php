@@ -7,11 +7,12 @@ namespace Yiisoft\Yii\Sentry\Tests\Stub;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use RuntimeException;
 
 final class FatalErrorCommand extends BaseCommand
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        throw new \RuntimeException('Console fatal error test.');
+        throw new RuntimeException('Console fatal error test.');
     }
 }

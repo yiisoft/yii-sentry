@@ -12,6 +12,8 @@ use Sentry\State\Hub;
 use Sentry\State\HubInterface;
 use Yiisoft\Yii\Sentry\Tests\Stub\Transport;
 
+use function dirname;
+
 abstract class TestCase extends BaseTestCase
 {
     protected function createSentryHub(string $eventKey): HubInterface
@@ -38,13 +40,13 @@ abstract class TestCase extends BaseTestCase
             $name,
             Transport::$events[$eventKey][0]
                 ->getExceptions()[0]
-                ->getType()
+                ->getType(),
         );
         $this->assertEquals(
             $message,
             Transport::$events[$eventKey][0]
                 ->getExceptions()[0]
-                ->getValue()
+                ->getValue(),
         );
     }
 

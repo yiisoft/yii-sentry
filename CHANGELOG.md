@@ -8,6 +8,7 @@
 - Chg #41: Drop support for PHP 8.0 (@rustamwin)
 - Chg #41, #43: Change PHP version constraint to `8.1 - 8.5` (@rustamwin)
 - Enh #41: Add support for `symfony/console` version `^7.0` (@rustamwin)
+- Enh #53: Explicitly import `Yiisoft\ErrorHandler\Exception\ErrorException` in "use" section of `config/params.php` (@vjik)
 
 ## 2.0.1 July 15, 2024
 

@@ -121,7 +121,7 @@ final class SentryCronMonitorFeatureTest extends TestCase
                     'schedule' => '*/5 * * * *',
                     'timezone' => 'UTC',
                 ],
-            ]
+            ],
         );
 
         $events = Transport::$events[$eventKey];

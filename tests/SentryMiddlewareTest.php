@@ -69,7 +69,7 @@ final class SentryMiddlewareTest extends TestCase
             $middleware = new SentryMiddleware($this->createSentryHub($eventKey));
             $middleware->process(
                 new ServerRequest(method: 'GET', uri: '/'),
-                $this->createRequestHandlerWithErrorHandlerException()
+                $this->createRequestHandlerWithErrorHandlerException(),
             );
         } catch (ErrorException $e) {
             $this->assertCount(0, Transport::$events[$eventKey]);
@@ -95,7 +95,7 @@ final class SentryMiddlewareTest extends TestCase
 
     private function createRequestHandlerWithException(): RequestHandlerInterface
     {
-        return new class () implements RequestHandlerInterface {
+        return new class implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
                 throw new RuntimeException('Exception test.');
@@ -105,7 +105,7 @@ final class SentryMiddlewareTest extends TestCase
 
     private function createRequestHandlerWithFatalError(): RequestHandlerInterface
     {
-        return new class () implements RequestHandlerInterface {
+        return new class implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
                 throw new RuntimeException('Fatal error test.');
@@ -115,7 +115,7 @@ final class SentryMiddlewareTest extends TestCase
 
     private function createRequestHandlerWithErrorHandlerException(): RequestHandlerInterface
     {
-        return new class () implements RequestHandlerInterface {
+        return new class implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
                 throw new ErrorException('Error handler exception test.');
@@ -125,7 +125,7 @@ final class SentryMiddlewareTest extends TestCase
 
     private function createRequestHandlerWithoutException(): RequestHandlerInterface
     {
-        return new class () implements RequestHandlerInterface {
+        return new class implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
                 return new Response();

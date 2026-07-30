@@ -37,6 +37,7 @@
         "yiisoft/di": "^1.0"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95",
         "guzzlehttp/guzzle": "^7.3",
         "httpsoft/http-message": "^1.0.9",
         "maglnet/composer-require-checker": "^4.2",
@@ -46,6 +47,7 @@
         "roave/infection-static-analysis-plugin": "^1.35",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^5.26.1|^6.13.1",
+        "yiisoft/code-style": "^1.1",
         "yiisoft/error-handler": "^4.0",
         "yiisoft/yii-console": "^1.0|^2.0",
         "yiisoft/yii-event": "^1.0|^2.0"
@@ -84,6 +86,8 @@
     },
     "scripts": {
         "test": "phpunit --testdox --no-interaction",
-        "test-watch": "phpunit-watcher watch"
+        "test-watch": "phpunit-watcher watch",
+        "rector": "rector",
+        "cs-fix": "php-cs-fixer fix"
     }
 }

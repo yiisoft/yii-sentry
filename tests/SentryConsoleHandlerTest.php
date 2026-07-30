@@ -29,7 +29,6 @@ final class SentryConsoleHandlerTest extends TestCase
         $methodName = debug_backtrace()[0]['function'];
         $eventKey = self::class . "::$methodName()";
 
-
         $this->createAndRunAppWithEventHandler($eventKey, ExceptionCommand::class);
         $this->assertTransportHasException(RuntimeException::class, 'Console exception test.', $eventKey);
     }
@@ -52,6 +51,22 @@ final class SentryConsoleHandlerTest extends TestCase
         $this->assertCount(0, Transport::$events[$eventKey]);
     }
 
+    public function testHandleWithoutError(): void
+    {
+        $methodName = debug_backtrace()[0]['function'];
+        $eventKey = self::class . "::$methodName()";
+
+        $app = new Application();
+        $app->setCommandLoader(new CommandLoader(
+            new Container(ContainerConfig::create()),
+            ['test/no-error' => ExceptionCommand::class],
+        ));
+        $app->setAutoExit(false);
+        $app->run(new StringInput('test/no-error'), new NullOutput());
+
+        $this->assertArrayNotHasKey($eventKey, Transport::$events);
+    }
+
     private function createAndRunAppWithEventHandler(string $eventKey, string $commandClass): void
     {
         $listeners = (new ListenerCollection())->add(function (ConsoleErrorEvent $event) use ($eventKey) {
@@ -70,21 +85,5 @@ final class SentryConsoleHandlerTest extends TestCase
         $app->setAutoExit(false);
         $app->setDispatcher($dispatcher);
         $app->run(new StringInput('test/command'), new NullOutput());
-    }
-
-    public function testHandleWithoutError(): void
-    {
-        $methodName = debug_backtrace()[0]['function'];
-        $eventKey = self::class . "::$methodName()";
-
-        $app = new Application();
-        $app->setCommandLoader(new CommandLoader(
-            new Container(ContainerConfig::create()),
-            ['test/no-error' => ExceptionCommand::class],
-        ));
-        $app->setAutoExit(false);
-        $app->run(new StringInput('test/no-error'), new NullOutput());
-
-        $this->assertArrayNotHasKey($eventKey, Transport::$events);
     }
 }
