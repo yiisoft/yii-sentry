@@ -5,7 +5,7 @@ on:
     paths: &paths
       - 'config/**'
       - 'src/**'
-      - 'config/**'
+      - 'tests/**'
       - '.github/workflows/composer-require-checker.yml'
       - 'composer.json'
   push:
