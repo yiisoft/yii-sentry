@@ -33,22 +33,23 @@
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
         "sentry/sentry": "^4.0",
-        "symfony/console": "^5.4|^6.0|^7.0",
-        "yiisoft/di": "^1.0"
+        "symfony/console": "^5.4|^6.0|^7.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.95",
         "guzzlehttp/guzzle": "^7.3",
         "httpsoft/http-message": "^1.0.9",
-        "maglnet/composer-require-checker": "^4.2",
         "php-http/guzzle7-adapter": "^1.0",
         "phpunit/phpunit": "^10.5.48",
         "rector/rector": "^2.2.7",
         "roave/infection-static-analysis-plugin": "^1.35",
+        "shipmonk/composer-dependency-analyser": "^1.8",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^5.26.1|^6.13.1",
         "yiisoft/code-style": "^1.1",
+        "yiisoft/di": "^1.0",
         "yiisoft/error-handler": "^4.0",
+        "yiisoft/event-dispatcher": "^1.0",
         "yiisoft/yii-console": "^1.0|^2.0",
         "yiisoft/yii-event": "^1.0|^2.0"
     },
@@ -88,6 +89,7 @@
         "test": "phpunit --testdox --no-interaction",
         "test-watch": "phpunit-watcher watch",
         "rector": "rector",
-        "cs-fix": "php-cs-fixer fix"
+        "cs-fix": "php-cs-fixer fix",
+        "dependency-analyser": "composer-dependency-analyser"
     }
 }
