@@ -1,5 +1,9 @@
 # Yii Sentry Change Log
 
+## 3.0.1 under development
+
+- no changes in this release.
+
 ## 3.0.0 August 15, 2026
 
 - Chg #40, 41, #43: Change PHP version constraint to `8.1 - 8.5` (@rustamwin, @batyrmastyr)
