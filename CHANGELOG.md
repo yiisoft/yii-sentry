@@ -3,12 +3,10 @@
 ## 3.0.0 under development
 
 - Enh #38: Add support for Sentry cron monitoring via check-ins (@KalimeroMK)
-- Chg #40: Add support for PHP 8.4 (@batyrmastyr)
 - Chg #40: Bump `sentry/sentry` version to `^4.0` (@batyrmastyr)
-- Chg #41: Drop support for PHP 8.0 (@rustamwin)
-- Chg #41, #43: Change PHP version constraint to `8.1 - 8.5` (@rustamwin)
+- Chg #40, 41, #43: Change PHP version constraint to `8.1 - 8.5` (@rustamwin, @batyrmastyr)
 - Enh #41: Add support for `symfony/console` version `^7.0` (@rustamwin)
-- Enh #53: Explicitly import `Yiisoft\ErrorHandler\Exception\ErrorException` in "use" section of `config/params.php` (@vjik)
+- Enh #53: Explicitly import `ErrorException` in "use" section of `config/params.php` (@vjik)
 - Enh #56: Remove unused `yiisoft/di` dependency (@vjik)
 
 ## 2.0.1 July 15, 2024
