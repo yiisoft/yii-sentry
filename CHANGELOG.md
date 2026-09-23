@@ -1,6 +1,6 @@
 # Yii Sentry Change Log
 
-## 3.0.1 under development
+## 3.0.1 September 23, 2026
 
 - Chg #58: Update symfony/console version constraint to include 8.0 (@bautrukevich)
 
