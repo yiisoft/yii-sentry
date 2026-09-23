@@ -2,7 +2,7 @@
 
 ## 3.0.1 under development
 
-- Chg #58: Update symfony/console version constraint to include 8.0 (@bautrukevich).
+- Chg #58: Update symfony/console version constraint to include 8.0 (@bautrukevich)
 
 ## 3.0.0 August 15, 2026
 
