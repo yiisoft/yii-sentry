@@ -318,9 +318,7 @@ final class ConfigTest extends TestCase
 
     private function getContainerDefinitions(?array $params = null, array $additionalDefinitions = []): array
     {
-        if ($params === null) {
-            $params = $this->getParams();
-        }
+        $params ??= $this->getParams();
 
         $definitions = require dirname(__DIR__) . '/config/di.php';
 
